@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Playbook – Academia Gaviões 24h</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{
+  --bg:#0f0f13;--surface:#1a1a22;--surface2:#22222e;--border:#2e2e3e;
+  --accent:#e53e3e;--text:#f1f1f5;--text2:#9999b3;
+  --green:#22c55e;--blue:#3b82f6;--radius:14px;
+  --sidebar:180px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex}
+
+/* ══ SIDEBAR ══ */
+.sidebar{
+  width:var(--sidebar);flex-shrink:0;
+  background:linear-gradient(180deg,#150000 0%,#111118 100%);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:fixed;left:0;top:0;bottom:0;z-index:100;
+  overflow:hidden;
+}
+.sidebar-brand{padding:18px 14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo{width:36px;height:36px;border-radius:8px;overflow:hidden;background:#111;border:1px solid #333;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.logo img{width:28px;height:28px;object-fit:contain}
+.brand-text h1{font-size:13px;font-weight:700;line-height:1.2;color:var(--text)}
+.brand-text p{font-size:10px;color:var(--text2);margin-top:1px}
+
+.sidebar-nav{flex:1;padding:10px 8px;display:flex;flex-direction:column;gap:3px;overflow-y:auto}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:none;background:transparent;color:var(--text2);font-size:12px;font-weight:600;cursor:pointer;transition:all .2s;text-align:left;width:100%}
+.nav-btn:hover{background:var(--surface2);color:var(--text)}
+.nav-btn.active{background:var(--accent)18;color:var(--accent)}
+.nav-btn.active .nav-icon{color:var(--accent)}
+.nav-icon{font-size:16px;flex-shrink:0;width:20px;text-align:center}
+.nav-label{flex:1}
+.nav-badge{background:var(--surface2);border-radius:20px;padding:1px 6px;font-size:10px;font-weight:700;color:var(--text2)}
+.nav-btn.active .nav-badge{background:var(--accent)33;color:var(--accent)}
+
+.sidebar-contacts{padding:10px 8px 14px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.side-contact-btn{display:flex;align-items:center;gap:7px;padding:8px 10px;border-radius:9px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);font-size:11px;font-weight:600;text-decoration:none;transition:all .2s;cursor:pointer;width:100%}
+.side-contact-btn:hover{border-color:var(--green);color:var(--green)}
+.side-contact-btn.email:hover{border-color:var(--blue);color:var(--blue)}
+.side-contact-btn.transfer:hover{border-color:var(--accent);color:var(--accent)}
+
+/* ══ MAIN ══ */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh;min-width:0}
+.main-header{padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:50}
+.search-wrap{position:relative}
+.search-wrap svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--text2);pointer-events:none}
+#search{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:9px 12px 9px 36px;color:var(--text);font-size:13px;outline:none;transition:border-color .2s}
+#search:focus{border-color:var(--accent)}
+#search::placeholder{color:var(--text2)}
+
+.tab-panel{display:none;flex:1}
+.tab-panel.active{display:block}
+.page{padding:16px 20px 40px;max-width:760px}
+
+/* ══ STATS & FILTERS ══ */
+.stats-bar{display:flex;gap:8px;margin-bottom:14px}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;flex:1;text-align:center}
+.stat-num{font-size:20px;font-weight:700;color:var(--accent);line-height:1}
+.stat-label{font-size:10px;color:var(--text2);margin-top:3px}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.filter-btn{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:5px 12px;font-size:11px;font-weight:500;color:var(--text2);cursor:pointer;transition:all .2s;white-space:nowrap}
+.filter-btn:hover{border-color:var(--accent);color:var(--accent)}
+.filter-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.section-label{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.07em;margin-bottom:10px}
+
+/* ══ PROCESS CARDS ══ */
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .2s;cursor:pointer}
+.card:hover{border-color:var(--accent)}
+.card.open{border-color:var(--accent)}
+.card-header{padding:13px 15px 11px;display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
+.card-title{font-size:13px;font-weight:700;color:var(--text);line-height:1.3}
+.card-chevron{width:18px;height:18px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .25s,background .2s;margin-top:1px}
+.card.open .card-chevron{transform:rotate(180deg);background:var(--accent)}
+.card.open .card-chevron svg{color:#fff}
+.card-meta{padding:0 15px 11px;display:flex;gap:5px;flex-wrap:wrap}
+.dept-badge{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;text-transform:uppercase;letter-spacing:.04em}
+.dept-sac{background:#1e3a5f;color:#60a5fa}
+.dept-email{background:#1e3355;color:#93c5fd}
+.dept-whatsapp{background:#14532d;color:#4ade80}
+.tag{font-size:10px;font-weight:600;padding:2px 6px;border-radius:5px;display:flex;align-items:center;gap:3px}
+.tag-chamado{background:#3b1f6e;color:#c4b5fd}
+.tag-anexo{background:#4a1515;color:#fca5a5}
+.card-body{display:none;padding:0 15px 15px;border-top:1px solid var(--border)}
+.card.open .card-body{display:block}
+.obs-banner{background:#2d1a00;border:1px solid #92400e;border-radius:8px;padding:8px 11px;font-size:12px;color:#fcd34d;line-height:1.5;margin:10px 0 8px;display:flex;gap:6px}
+.card-desc{font-size:12px;color:var(--text2);line-height:1.6;padding:10px 0 8px}
+.steps-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);margin-bottom:7px}
+.steps{display:flex;flex-direction:column;gap:7px}
+.step{display:flex;gap:9px;align-items:flex-start}
+.step-num{width:20px;height:20px;border-radius:6px;background:var(--accent);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-text{font-size:12px;color:var(--text);line-height:1.5}
+.step-text .hl-green{color:var(--green);font-weight:600}
+.step-text .hl-blue{color:#60a5fa;font-weight:600}
+.step-text .hl-red{color:var(--accent);font-weight:600}
+.empty{text-align:center;padding:50px 20px;color:var(--text2);font-size:13px;grid-column:1/-1}
+.empty-icon{font-size:36px;margin-bottom:8px}
+
+/* ══ MAP ══ */
+.map-header{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 15px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;transition:border-color .2s;margin-bottom:0}
+.map-header:hover{border-color:var(--accent)}
+.map-header.open{border-radius:var(--radius) var(--radius) 0 0;border-color:var(--accent);border-bottom-color:transparent}
+.map-header-left{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:var(--text)}
+.map-badge{font-size:10px;font-weight:600;background:var(--accent);color:#fff;padding:2px 7px;border-radius:20px}
+.map-chevron{width:18px;height:18px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;transition:transform .25s,background .2s}
+.map-chevron.open{transform:rotate(180deg);background:var(--accent)}
+.map-chevron.open svg{color:#fff}
+#map-container{border:1px solid var(--accent);border-top:none;border-radius:0 0 var(--radius) var(--radius);overflow:hidden;margin-bottom:14px}
+#map{height:380px;width:100%}
+
+.gavioes-tip{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important}
+.gavioes-tip::before{display:none!important}
+.tip-card{background:#13131a;border:1px solid #2e2e3e;border-radius:11px;padding:11px 13px;min-width:200px;max-width:270px;box-shadow:0 8px 30px rgba(0,0,0,.7);font-family:'Segoe UI',system-ui,sans-serif}
+.tip-header{display:flex;align-items:center;gap:7px;margin-bottom:9px;border-bottom:1px solid #2e2e3e;padding-bottom:7px}
+.tip-logo{width:24px;height:24px;border-radius:4px;object-fit:cover;flex-shrink:0}
+.tip-name{font-size:12px;font-weight:700;color:#e53e3e;line-height:1.2}
+.tip-model{font-size:10px;color:#9999b3;margin-top:1px}
+.tip-row{display:flex;gap:6px;align-items:flex-start;margin-bottom:5px;font-size:11px;color:#d1d1e0;line-height:1.4}
+.tip-icon{flex-shrink:0;font-size:11px;margin-top:1px}
+.tip-chips{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px}
+.tip-chip{background:#1f1f2e;border:1px solid #3a3a50;border-radius:4px;padding:2px 5px;font-size:9px;color:#c4c4e0}
+.tip-pcd{display:inline-flex;align-items:center;gap:3px;background:#1a2e1a;border:1px solid #166534;border-radius:4px;padding:2px 6px;font-size:9px;color:#4ade80;margin-top:4px}
+
+/* ══ UNIT CARDS ══ */
+.unit-cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.unit-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;transition:border-color .2s}
+.unit-card:hover{border-color:var(--border)}
+.unit-card.open{border-color:var(--accent)}
+.unit-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px}
+.unit-card-name{font-size:13px;font-weight:700;color:var(--accent);cursor:pointer;transition:opacity .2s;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px}
+.unit-card-name:hover{opacity:.75}
+.unit-card-model{font-size:10px;font-weight:600;padding:2px 6px;border-radius:5px;flex-shrink:0}
+.model-propria{background:#1e3a5f;color:#60a5fa}
+.model-franquia{background:#2d1f00;color:#fbbf24}
+.unit-card-addr{font-size:11px;color:var(--text2);margin-bottom:6px;line-height:1.4}
+.unit-card-hours{font-size:11px;color:var(--green);font-weight:600;display:flex;align-items:center;gap:5px}
+.unit-expand-btn{margin-top:8px;font-size:10px;font-weight:600;color:var(--text2);background:none;border:none;cursor:pointer;padding:0;display:flex;align-items:center;gap:4px;transition:color .2s}
+.unit-expand-btn:hover{color:var(--text)}
+.unit-card-body{display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:10px}
+.unit-card.open .unit-card-body{display:block}
+/* Unit layout: cards left + preview right */
+.units-layout{display:flex;gap:16px;align-items:flex-start;margin-top:14px}
+.unit-cards{flex:1;min-width:0;display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:0}
+.unit-preview{width:260px;flex-shrink:0;position:sticky;top:70px}
+.unit-preview-inner{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;transition:border-color .2s}
+.unit-preview-inner.has-img{border-color:var(--accent)}
+.preview-img{width:100%;height:220px;object-fit:cover;display:block;transition:opacity .3s}
+.preview-placeholder{width:100%;height:220px;background:var(--surface2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--text2);font-size:12px}
+.preview-loading{width:100%;height:220px;background:var(--surface2);display:flex;align-items:center;justify-content:center;color:var(--text2);font-size:12px;gap:8px}
+.preview-info{padding:12px 14px}
+.preview-name{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:4px}
+.preview-addr{font-size:11px;color:var(--text2);line-height:1.5}
+.preview-hours{font-size:11px;color:var(--green);font-weight:600;margin-top:5px}
+.unit-card.selected{border-color:var(--accent)}
+.unit-detail-row{display:flex;gap:6px;align-items:flex-start;margin-bottom:6px;font-size:11px;color:var(--text);line-height:1.4}
+.unit-detail-icon{flex-shrink:0;font-size:12px}
+.unit-chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}
+.unit-chip{background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:10px;color:var(--text2)}
+.unit-pcd{display:inline-flex;align-items:center;gap:3px;background:#1a2e1a;border:1px solid #166534;border-radius:4px;padding:2px 7px;font-size:10px;color:#4ade80;margin-top:4px}
+@media(max-width:700px){.units-layout{flex-direction:column}.unit-preview{width:100%;position:static}.preview-img{height:180px}}
+
+/* ══ MAP FLASH ══ */
+@keyframes markerPulse{0%{box-shadow:0 0 0 0 rgba(229,62,62,.7)}70%{box-shadow:0 0 0 12px rgba(229,62,62,0)}100%{box-shadow:0 0 0 0 rgba(229,62,62,0)}}
+.marker-pulse{animation:markerPulse 1s ease-out 3}
+
+/* ══ TOAST ══ */
+.toast{position:fixed;bottom:24px;left:calc(var(--sidebar) + 20px);transform:translateY(20px);background:var(--green);color:#fff;font-size:12px;font-weight:600;padding:9px 18px;border-radius:30px;opacity:0;transition:all .3s;pointer-events:none;z-index:999}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* ══ RESPONSIVE ══ */
+@media(max-width:640px){
+  :root{--sidebar:0px}
+  .sidebar{width:100%;height:auto;position:fixed;bottom:0;top:auto;left:0;right:0;flex-direction:row;border-right:none;border-top:1px solid var(--border);z-index:200}
+  .sidebar-brand,.sidebar-contacts{display:none}
+  .sidebar-nav{flex-direction:row;padding:0;gap:0;overflow-x:auto}
+  .nav-btn{flex-direction:column;gap:3px;padding:8px 12px;border-radius:0;font-size:10px;flex:1;justify-content:center;align-items:center}
+  .nav-icon{width:auto}
+  .nav-badge{display:none}
+  .main{margin-left:0;margin-bottom:60px}
+  .toast{left:20px}
+}
+@media(max-width:900px) and (min-width:641px){
+  :root{--sidebar:56px}
+  .brand-text,.nav-label,.nav-badge,.sidebar-contacts{display:none}
+  .sidebar-brand{padding:14px;justify-content:center}
+  .nav-btn{justify-content:center;padding:12px 0}
+}
+@media(max-width:500px){.cards,.unit-cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo"><img src="https://academiagavioes24h.com.br/apps/transferencia/favicon.ico" alt="" onerror="this.parentElement.innerHTML='🦅'"></div>
+    <div class="brand-text"><h1>Playbook</h1><p>Gaviões 24h</p></div>
+  </div>
+
+  <nav class="sidebar-nav" id="sidebar-nav">
+    <button class="nav-btn active" data-tab="processos">
+      <span class="nav-icon">📋</span>
+      <span class="nav-label">Processos</span>
+      <span class="nav-badge" id="badge-processos">12</span>
+    </button>
+    <button class="nav-btn" data-tab="unidades">
+      <span class="nav-icon">📍</span>
+      <span class="nav-label">Unidades</span>
+      <span class="nav-badge" id="badge-unidades">90</span>
+    </button>
+  </nav>
+
+  <div class="sidebar-contacts">
+    <a class="side-contact-btn" href="https://wa.me/5511940747584" target="_blank">
+      <svg width="12" height="12" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/></svg>
+      SAC WhatsApp
+    </a>
+    <button class="side-contact-btn email" onclick="copyEmail()">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></svg>
+      Copiar e-mail
+    </button>
+    <a class="side-contact-btn transfer" href="https://academiagavioes24h.com.br/apps/transferencia/" target="_blank">
+      <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      Transferência
+    </a>
+  </div>
+</aside>
+
+<!-- ══ MAIN ══ -->
+<main class="main">
+  <div class="main-header">
+    <div class="search-wrap">
+      <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search" placeholder="Buscar processo ou unidade..." autocomplete="off">
+    </div>
+  </div>
+
+  <!-- PROCESSOS -->
+  <div class="tab-panel active" id="tab-processos">
+    <div class="page">
+      <div class="stats-bar">
+        <div class="stat"><div class="stat-num" id="count-total">12</div><div class="stat-label">Processos</div></div>
+        <div class="stat"><div class="stat-num" style="color:var(--blue)" id="count-chamado">0</div><div class="stat-label">Requer chamado</div></div>
+        <div class="stat"><div class="stat-num" style="color:#ef4444" id="count-anexo">0</div><div class="stat-label">Requer anexo</div></div>
+      </div>
+      <div class="filters" id="filters">
+        <button class="filter-btn active" data-dept="todos">Todos</button>
+        <button class="filter-btn" data-dept="SAC">📋 SAC</button>
+        <button class="filter-btn" data-dept="E-mail">✉️ E-mail</button>
+        <button class="filter-btn" data-dept="WhatsApp">💬 WhatsApp</button>
+      </div>
+      <div class="section-label" id="section-label">Processos</div>
+      <div class="cards" id="cards"></div>
+    </div>
+  </div>
+
+  <!-- UNIDADES -->
+  <div class="tab-panel" id="tab-unidades">
+    <div class="page">
+      <div class="map-header" onclick="toggleMap()">
+        <div class="map-header-left">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Ver no mapa
+          <span class="map-badge">90 unidades</span>
+        </div>
+        <div class="map-chevron" id="map-chevron">
+          <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+        </div>
+      </div>
+      <div id="map-container" style="display:none"><div id="map"></div></div>
+      <div class="section-label" id="unit-label" style="margin-top:14px">90 unidades</div>
+      <div class="units-layout">
+        <div class="unit-cards" id="unit-cards"></div>
+        <div class="unit-preview" id="unit-preview">
+          <div class="unit-preview-inner" id="unit-preview-inner">
+            <div class="preview-placeholder" id="preview-placeholder">
+              <span style="font-size:36px">🦅</span>
+              <span>Selecione uma unidade</span>
+            </div>
+            <img class="preview-img" id="preview-img" src="" alt="" style="display:none"
+              onerror="this.style.display='none';document.getElementById('preview-placeholder').style.display='flex'">
+            <div class="preview-info" id="preview-info" style="display:none">
+              <div class="preview-name" id="preview-name"></div>
+              <div class="preview-addr" id="preview-addr"></div>
+              <div class="preview-hours" id="preview-hours"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const LOGO='https://academiagavioes24h.com.br/apps/transferencia/favicon.ico';
+
+// ══════════ TABS ══════════
+let activeTab='processos';
+document.querySelectorAll('.nav-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    const tab=btn.dataset.tab;
+    document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-'+tab).classList.add('active');
+    activeTab=tab;
+    document.getElementById('search').placeholder=tab==='unidades'?'Buscar unidade...':'Buscar processo...';
+    document.getElementById('search').value='';
+    if(tab==='processos'){searchTerm='';renderCards();}
+    if(tab==='unidades')renderUnits('');
+  });
+});
+document.getElementById('search').addEventListener('input',e=>{
+  const v=e.target.value.toLowerCase();
+  if(activeTab==='processos'){searchTerm=v;renderCards();}
+  if(activeTab==='unidades')renderUnits(v);
+});
+
+// ══════════ PROCESSOS ══════════
+const processos=[
+  {id:1,titulo:"Personal",dept:"WhatsApp",chamado:false,anexo:false,descricao:"Cadastro de personal trainer. O Inside Sales é o mesmo do SAC para envio de documentação e ativação do plano.",passos:["Criar cadastro do aluno no sistema.","Enviar o WhatsApp do Inside Sales: <span class='hl-green'>+55 11 94074-7584</span> — enviar <span class='hl-red'>CREF</span> e adicionar cartão de crédito para prosseguir.","Se o personal já tiver plano ativo, realizar direto na recepção — lançar <span class='hl-red'>\"Personal Start (adicional)\"</span>."]},
+  {id:2,titulo:"Chargeback",dept:"SAC",chamado:false,anexo:false,descricao:"Explicação sobre a multa aplicada quando o aluno solicita estorno pela operadora do banco.",passos:["Explicar que o <span class='hl-red'>ChargeBack é uma multa</span>, aplicada após solicitar estorno pela operadora.","Informar o SAC: <span class='hl-green'>+55 11 94074-7584</span>, caso ainda tenha dúvidas."]},
+  {id:3,titulo:"Cancelamento de Plano Parcelado",dept:"E-mail",chamado:true,anexo:false,descricao:"O aluno deve solicitar o cancelamento por e-mail, informando dados pessoais.",passos:["Informar o e-mail: <span class='hl-blue'>sac@academiagavioes.com.br</span>","Orientar que o e-mail deve conter: <span class='hl-red'>nome completo, CPF, unidade e motivo</span>.","Avisar que o atendimento só ocorre após geração de ticket."]},
+  {id:4,titulo:"Oportunidade",dept:"SAC",chamado:true,anexo:false,descricao:"Exclusão de oportunidade no sistema via chamado. Geralmente gerada por cadastros Gympass/Totalpass.",passos:["Anotar o <span class='hl-red'>ID da oportunidade</span>.","Enviar chamado ao SAC solicitando remoção ou conversão."]},
+  {id:5,titulo:"Mesclar Cadastros",dept:"SAC",chamado:true,anexo:false,descricao:"Para mesclar cadastros, todos os IDs devem estar vinculados à mesma unidade.",passos:["Anotar <span class='hl-red'>todos os IDs</span> do aluno.","Enviar todos os IDs em chamado solicitando a mescla."]},
+  {id:6,titulo:"Troca de Data de Cobrança",dept:"WhatsApp",chamado:true,anexo:false,descricao:"Alteração da data de cobrança com taxa variável. Cálculo realizado somente via WhatsApp do SAC.",passos:["Explicar que a <span class='hl-red'>alteração tem taxa variável</span> conforme a data escolhida.","Informar o WhatsApp: <span class='hl-green'>+55 11 94074-7584</span> — cálculo somente por lá.","Reforçar que será cobrada uma taxa para concluir a troca."]},
+  {id:7,titulo:"Trancamento",dept:"E-mail",chamado:true,anexo:true,obs:"Trancamentos são realizados somente para <strong>planos anuais</strong> e apenas por motivo de doença, mediante atestado ou laudo médico.",descricao:"O aluno com plano anual pode solicitar trancamento por saúde enviando e-mail ao SAC com documentação.",passos:["Verificar o plano do aluno — <span class='hl-red'>somente plano anual</span> está apto.","Orientar a enviar e-mail para <span class='hl-blue'>sac@academiagavioes.com.br</span> com: <span class='hl-red'>nome completo, CPF, unidade</span> e <span class='hl-red'>atestado ou laudo médico</span> em anexo."]},
+  {id:8,titulo:"Transferência sem Plano Ativo",dept:"SAC",chamado:false,anexo:false,descricao:"Transferência realizada diretamente na recepção ou enviando o link ao aluno.",passos:["Acessar ou enviar ao aluno: <a href='https://academiagavioes24h.com.br/apps/transferencia/' target='_blank' class='hl-blue' onclick='event.stopPropagation()'>academiagavioes24h.com.br/apps/transferencia</a>","Se o <span class='hl-red'>SMS não chegar</span> ou os dados estiverem <span class='hl-red'>incompletos</span>, abrir chamado para o SAC."]},
+  {id:9,titulo:"Cancelamento Recorrente",dept:"E-mail",chamado:false,anexo:false,descricao:"Solicitação com no mínimo 5 dias úteis de antecedência.",passos:["Informar o e-mail: <span class='hl-blue'>sac@academiagavioes.com.br</span>","Orientar que o e-mail deve conter: <span class='hl-red'>nome completo, CPF, unidade e motivo</span>.","Avisar que o atendimento só ocorre após geração de ticket.","Lembrar: solicitar com <span class='hl-red'>pelo menos 5 dias úteis</span> de antecedência."]},
+  {id:10,titulo:"Transferência com Plano Ativo",dept:"WhatsApp",chamado:true,anexo:false,descricao:"Disponível somente para planos recorrentes, via WhatsApp do SAC.",passos:["Confirmar que o aluno tem <span class='hl-red'>plano recorrente</span> (não disponível para parcelados).","Informar o WhatsApp: <span class='hl-green'>+55 11 94074-7584</span> para concluir."]},
+  {id:11,titulo:"Upgrade / Downgrade",dept:"WhatsApp",chamado:false,anexo:false,descricao:"Upgrade gera cobrança adicional. Downgrade aplica desconto na próxima mensalidade.",passos:["Informar que é realizado pelo WhatsApp: <span class='hl-green'>+55 11 94074-7584</span>","<span class='hl-red'>Upgrade</span> → cobrança adicional | <span class='hl-green'>Downgrade</span> → desconto na próxima mensalidade."]},
+  {id:12,titulo:"Pagamento Duplicado",dept:"SAC",chamado:true,anexo:true,descricao:"Abrir chamado com ID, dados do cartão e comprovante das cobranças indevidas.",passos:["Solicitar o <span class='hl-red'>comprovante de pagamento</span>.","Verificar os <span class='hl-red'>4 últimos dígitos do cartão</span> (físico e digital) e bandeira.","Abrir chamado com ID no título e dados do cartão no corpo.","Informar retorno em <span class='hl-red'>até 24 horas úteis</span>."]}
+];
+let activeFilter='todos',searchTerm='';
+function getDeptClass(d){return d.includes('WhatsApp')?'dept-whatsapp':d.includes('E-mail')?'dept-email':'dept-sac'}
+function getDeptLabel(d){return d.includes('WhatsApp')?'💬 WhatsApp':d.includes('E-mail')?'✉️ E-mail':'📋 SAC'}
+function renderCards(){
+  const c=document.getElementById('cards'),lbl=document.getElementById('section-label');
+  const f=processos.filter(p=>{
+    const mf=activeFilter==='todos'||p.dept.includes(activeFilter);
+    const ms=p.titulo.toLowerCase().includes(searchTerm)||p.descricao.toLowerCase().includes(searchTerm)||p.passos.some(s=>s.toLowerCase().includes(searchTerm));
+    return mf&&ms;
+  });
+  lbl.textContent=`${f.length} processo${f.length!==1?'s':''} encontrado${f.length!==1?'s':''}`;
+  if(!f.length){c.innerHTML=`<div class="empty"><div class="empty-icon">🔍</div>Nenhum processo encontrado.</div>`;return}
+  c.innerHTML=f.map(p=>`
+    <div class="card" id="card-${p.id}" onclick="toggleCard(${p.id})">
+      <div class="card-header"><div class="card-title">${p.titulo}</div>
+        <div class="card-chevron"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></div>
+      </div>
+      <div class="card-meta">
+        <span class="dept-badge ${getDeptClass(p.dept)}">${getDeptLabel(p.dept)}</span>
+        ${p.chamado?`<span class="tag tag-chamado">🎟 Chamado</span>`:''}
+        ${p.anexo?`<span class="tag tag-anexo">📎 Anexo</span>`:''}
+      </div>
+      <div class="card-body">
+        ${p.obs?`<div class="obs-banner"><span>⚠️</span><div>${p.obs}</div></div>`:''}
+        <div class="card-desc">${p.descricao}</div>
+        <div class="steps-title">Passo a passo</div>
+        <div class="steps">${p.passos.map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`).join('')}</div>
+      </div>
+    </div>`).join('');
+}
+function toggleCard(id){document.getElementById(`card-${id}`).classList.toggle('open')}
+document.getElementById('filters').addEventListener('click',e=>{
+  const btn=e.target.closest('.filter-btn');if(!btn)return;
+  document.querySelectorAll('#filters .filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');activeFilter=btn.dataset.dept;renderCards();
+});
+document.getElementById('count-total').textContent=processos.length;
+document.getElementById('count-chamado').textContent=processos.filter(p=>p.chamado).length;
+document.getElementById('count-anexo').textContent=processos.filter(p=>p.anexo).length;
+document.getElementById('badge-processos').textContent=processos.length;
+renderCards();
+
+// ══════════ UNIDADES ══════════
+const unidades=[
+  {nome:"TABOÃO",end:"R. Raphael de Marco, 285 - Taboão da Serra - SP",lat:-23.617,lon:-46.775},
+  {nome:"ALDEOTA",end:"Av. Santos Dumont, 3155 - Fortaleza - CE",lat:-3.737,lon:-38.502},
+  {nome:"SÃO MIGUEL",end:"Av. São Miguel, 6813 - São Paulo - SP",lat:-23.519,lon:-46.454},
+  {nome:"MONDUBIM",end:"Av. Godofredo Maciel, 5324 - Fortaleza - CE",lat:-3.800,lon:-38.580},
+  {nome:"PENHA",end:"R. Jorge Augusto, 268 - São Paulo - SP",lat:-23.519,lon:-46.540},
+  {nome:"PIMENTAS",end:"Estr. JK de Oliveira, 1932 - Guarulhos - SP",lat:-23.421,lon:-46.396},
+  {nome:"POA",end:"Av. Nove de Julho, 1256 - Poá - SP",lat:-23.523,lon:-46.340},
+  {nome:"MOOCA",end:"R. Cap. Pacheco e Chaves, 500 - São Paulo - SP",lat:-23.571,lon:-46.588},
+  {nome:"CASTELÃO",end:"Av. Alberto Craveiro, 2000 - Fortaleza - CE",lat:-3.818,lon:-38.516},
+  {nome:"PALMAS",end:"Av. NS 2, 09 - Palmas - TO",lat:-10.184,lon:-48.333},
+  {nome:"SANTO ANDRÉ",end:"Av. Atlântica, 420 - Santo André - SP",lat:-23.647,lon:-46.528},
+  {nome:"TAQUARALTO",end:"TO-050, 408 - Palmas - TO",lat:-10.262,lon:-48.333},
+  {nome:"ITAIM I",end:"Av. Marechal Tito, 7579 - São Paulo - SP",lat:-23.502,lon:-46.394},
+  {nome:"AMERICANA",end:"R. Júlio Prestes, 55 - Americana - SP",lat:-22.738,lon:-47.332},
+  {nome:"ALPHAVILLE",end:"Av. Juruá, 301 - Barueri - SP",lat:-23.505,lon:-46.841},
+  {nome:"PINHEIROS",end:"R. João Moura, 512 - São Paulo - SP",lat:-23.566,lon:-46.691},
+  {nome:"VARGEM GRANDE",end:"R. Serra da Mantiqueira, 10170 - Vargem Grande Paulista - SP",lat:-23.602,lon:-47.026},
+  {nome:"ARUJÁ",end:"R. Guanabara, 130 - Arujá - SP",lat:-23.397,lon:-46.318},
+  {nome:"ITAPEVI",end:"R. Pedro Paulino, 754 - Itapevi - SP",lat:-23.543,lon:-47.067},
+  {nome:"MOGI GUAÇU",end:"Av. Mogi Mirim, 1451 - Mogi Guaçu - SP",lat:-22.371,lon:-46.940},
+  {nome:"RIO BRANCO",end:"Av. Rio Branco, 422 - São Paulo - SP",lat:-23.536,lon:-46.636},
+  {nome:"SÃO VICENTE",end:"Av. Antônio Emmerich, 410 - São Vicente - SP",lat:-23.953,lon:-46.389},
+  {nome:"SAÚDE",end:"Av. Fagundes Filho, 902 - São Paulo - SP",lat:-23.636,lon:-46.620},
+  {nome:"AEROPORTO",end:"Av. Dr. Lino de Moraes Leme, 1138 - São Paulo - SP",lat:-23.640,lon:-46.619},
+  {nome:"GUARUJÁ",end:"Av. Dom Pedro I, 2444 - Guarujá - SP",lat:-23.990,lon:-46.257},
+  {nome:"ITAPETININGA",end:"R. Benedita Silva Rosa, 214 - Itapetininga - SP",lat:-23.590,lon:-48.054},
+  {nome:"RIBEIRÃO",end:"Av. Dom Pedro I, 1200 - Ribeirão Preto - SP",lat:-21.170,lon:-47.810},
+  {nome:"PERDIZES",end:"R. Apiacás, 910 - São Paulo - SP",lat:-23.545,lon:-46.665},
+  {nome:"JABAQUARA",end:"R. Getúlio Soares da Rocha, 34 - São Paulo - SP",lat:-23.662,lon:-46.635},
+  {nome:"ATIBAIA",end:"R. Luiz Onofre de Amorim, 50 - Atibaia - SP",lat:-23.117,lon:-46.549},
+  {nome:"PRAIA GRANDE",end:"Av. Ayrton Senna da Silva, 119 - Praia Grande - SP",lat:-24.006,lon:-46.412},
+  {nome:"TAUBATÉ",end:"Av. Independência, 1120 - Taubaté - SP",lat:-23.026,lon:-45.558},
+  {nome:"VILA MARIA",end:"Av. Alberto Byington, 1582 - São Paulo - SP",lat:-23.498,lon:-46.612},
+  {nome:"RIO DAS PEDRAS",end:"Av. Rio das Pedras, 341 - São Paulo - SP",lat:-23.542,lon:-46.461},
+  {nome:"SOROCABA",end:"Av. Elias Maluf, 1910 - Sorocaba - SP",lat:-23.505,lon:-47.458},
+  {nome:"TAIPAS",end:"Av. Dep. Cantídio Sampaio, 5001 - São Paulo - SP",lat:-23.461,lon:-46.715},
+  {nome:"ARICANDUVA",end:"Av. Rio das Pedras, 1793 - São Paulo - SP",lat:-23.540,lon:-46.546},
+  {nome:"JARAGUÁ",end:"Av. Raimundo P. de Magalhães, 10680 - São Paulo - SP",lat:-23.445,lon:-46.761},
+  {nome:"IPIRANGA",end:"Rua do Reno, 44 - São Paulo - SP",lat:-23.588,lon:-46.604},
+  {nome:"CARRÃO",end:"Av. Guilherme Giorgi, 1240 - São Paulo - SP",lat:-23.545,lon:-46.572},
+  {nome:"PONTE ESTAIADA",end:"Av. Duquesa de Goiás, 830 - São Paulo - SP",lat:-23.624,lon:-46.694},
+  {nome:"CUIABÁ",end:"Av. Fernando Corrêa da Costa, 7027 - Cuiabá - MT",lat:-15.625,lon:-56.062},
+  {nome:"VILA MADALENA",end:"Rua Paulistânia, 339 - São Paulo - SP",lat:-23.552,lon:-46.693},
+  {nome:"ARAGUAÍNA",end:"R. do Gaúcho, 250 - Araguaína - TO",lat:-7.190,lon:-48.207},
+  {nome:"CONSOLAÇÃO",end:"Rua da Consolação, 2037 - São Paulo - SP",lat:-23.551,lon:-46.654},
+  {nome:"METRÔ SAPOPEMBA",end:"Av. Sapopemba, 11449 - São Paulo - SP",lat:-23.613,lon:-46.490},
+  {nome:"PATTEO KLABIN",end:"Rua Vergueiro, 1730 - São Paulo - SP",lat:-23.583,lon:-46.627},
+  {nome:"ARACATI",end:"R. Cel. Pompeu, 58 - Aracati - CE",lat:-4.562,lon:-37.769},
+  {nome:"FEIRA DE SANTANA",end:"Av. Artêmia Pires Freitas, 8610 - Feira de Santana - BA",lat:-12.259,lon:-38.962},
+  {nome:"VILA MATILDE",end:"R. Antônio Lindoro da Silva, 630 - São Paulo - SP",lat:-23.545,lon:-46.516},
+  {nome:"VILA LEOPOLDINA",end:"R. Guaipá, 265 - São Paulo - SP",lat:-23.531,lon:-46.730},
+  {nome:"SHOPPING TRIMAIS",end:"Av. Tucuruvi, 248 - São Paulo - SP",lat:-23.470,lon:-46.618},
+  {nome:"PAULISTA",end:"R. Treze de Maio, 812 - São Paulo - SP",lat:-23.559,lon:-46.649},
+  {nome:"TREMEMBÉ",end:"Av. Cel. Sezefredo Fagundes, 633 - São Paulo - SP",lat:-23.468,lon:-46.659},
+  {nome:"VILA GALVÃO",end:"Av. Emílio Ribas, 3143 - Guarulhos - SP",lat:-23.472,lon:-46.527},
+  {nome:"VILA GUSTAVO",end:"Av. Gustavo Adolfo, 114 - São Paulo - SP",lat:-23.468,lon:-46.620},
+  {nome:"MARGINAL",end:"Av. Thomas Edison, 1340 - São Paulo - SP",lat:-23.525,lon:-46.660},
+  {nome:"LIMÃO",end:"Av. Dep. Emílio Carlos, 380 - São Paulo - SP",lat:-23.494,lon:-46.659},
+  {nome:"PARAPUÃ",end:"R. Parapuã, 971 - São Paulo - SP",lat:-23.455,lon:-46.682},
+  {nome:"ALTO DE SANTANA",end:"Av. Imirim, 165 - São Paulo - SP",lat:-23.497,lon:-46.628},
+  {nome:"BARREIRA GRANDE",end:"Av. da Barreira Grande, 1500 - São Paulo - SP",lat:-23.600,lon:-46.482},
+  {nome:"BAURU",end:"Av. Getúlio Vargas, 22 - Bauru - SP",lat:-22.316,lon:-49.060},
+  {nome:"CACHOEIRINHA",end:"Av. João dos Santos Abreu, 738 - São Paulo - SP",lat:-23.476,lon:-46.648},
+  {nome:"CAMPINAS",end:"Av. Dr. Heitor Penteado, 626 - Campinas - SP",lat:-22.905,lon:-47.063},
+  {nome:"CANGAÍBA",end:"Av. Cangaíba, 1114 - São Paulo - SP",lat:-23.499,lon:-46.537},
+  {nome:"CARAPICUÍBA",end:"Av. Inocêncio Seráfico, 3375 - Carapicuíba - SP",lat:-23.521,lon:-46.835},
+  {nome:"CELSO GARCIA",end:"Av. Celso Garcia, 5494 - São Paulo - SP",lat:-23.537,lon:-46.570},
+  {nome:"CUMBICA",end:"R. Porto Velho, 825 - Guarulhos - SP",lat:-23.431,lon:-46.477},
+  {nome:"DIADEMA",end:"Av. Alda, 660 - Diadema - SP",lat:-23.685,lon:-46.609},
+  {nome:"FAST TREINO",end:"Av. Juruá, 301 - Barueri - SP",lat:-23.506,lon:-46.842},
+  {nome:"FERRAZÓPOLIS",end:"R. Tiradentes, 1399 - São Bernardo do Campo - SP",lat:-23.716,lon:-46.555},
+  {nome:"FORTALEZA I",end:"Av. Washington Soares, 3939 - Fortaleza - CE",lat:-3.756,lon:-38.447},
+  {nome:"FORTALEZA II",end:"Av. Bezerra de Menezes, 1496 - Fortaleza - CE",lat:-3.737,lon:-38.565},
+  {nome:"HORTO",end:"Av. Parada Pinto, 2513 - São Paulo - SP",lat:-23.462,lon:-46.612},
+  {nome:"ITAIM II",end:"R. Dr. Durval Vilalva, 198 - São Paulo - SP",lat:-23.555,lon:-46.477},
+  {nome:"ITAQUAQUECETUBA",end:"Av. Italo Adami, 821 - Itaquaquecetuba - SP",lat:-23.487,lon:-46.348},
+  {nome:"JOÃO PESSOA",end:"Av. Pres. Epitácio Pessoa, 2690 - João Pessoa - PB",lat:-7.119,lon:-34.845},
+  {nome:"JOINVILLE",end:"Av. JK, 517 - Joinville - SC",lat:-26.304,lon:-48.846},
+  {nome:"LAJEADO",end:"Estrada do Lajeado Velho, 767 - São Paulo - SP",lat:-23.542,lon:-46.402},
+  {nome:"LENÇÓIS PAULISTA",end:"Av. Nove de Julho, 100 - Lençóis Paulista - SP",lat:-22.598,lon:-48.802},
+  {nome:"OCEANIA",end:"R. Antônio Gomes Carneiro - João Pessoa - PB",lat:-7.130,lon:-34.856},
+  {nome:"PIRITUBA",end:"R. Inácio Luís da Costa, 2012 - São Paulo - SP",lat:-23.466,lon:-46.737},
+  {nome:"RECIFE",end:"Av. Recife, 2529 - Recife - PE",lat:-8.135,lon:-34.906},
+  {nome:"SBC",end:"Av. Cézar Magnani, 840 - São Bernardo do Campo - SP",lat:-23.694,lon:-46.565},
+  {nome:"SÃO MATEUS",end:"Rua Cristovão de Oliveira, 78 - São Paulo - SP",lat:-23.605,lon:-46.488},
+  {nome:"SAPOPEMBA",end:"Av. Sapopemba, 4921 - São Paulo - SP",lat:-23.613,lon:-46.538},
+  {nome:"SIQUEIRA BUENO",end:"Rua Siqueira Bueno, 1691 - São Paulo - SP",lat:-23.543,lon:-46.591},
+  {nome:"TABOÃO 2",end:"R. Carlos Marques Teixeira, 28 - Taboão da Serra - SP",lat:-23.620,lon:-46.773},
+  {nome:"VILA AUGUSTA",end:"Av. Guarulhos, 1335 - Guarulhos - SP",lat:-23.456,lon:-46.536}
+];
+
+const dadosUnidades={"TABOÃO":{"hours":"24H","phone":"11 93489-9212","parking":"2 estacionamentos: coberto (15 vagas) e descoberto (10 vagas)","services":["Aula experimental","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"ALDEOTA":{"hours":"24H","phone":"85 3017-5829","parking":"Incluso na mensalidade","services":["Fisioterapia","Pilates","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Silver+ / TP3","model":"Própria"},"SÃO MIGUEL":{"hours":"24H","phone":"(11) 3938-1371","parking":"Grátis Seg-Sex 5h–23h45 / Sab-Dom-Fer 5h–19h45","services":["Bioimpedância","Aula experimental","Sala VIP","Plano Kids"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"MONDUBIM":{"hours":"24H","phone":"85 9 9631-9295","parking":"Gratuito","services":["Sala VIP","Valet"],"pcd":true,"plans":"TP1+ / Basic+","model":"Própria"},"PENHA":{"hours":"24H","phone":"11 2958-8169","parking":"Grátis 2h, após R$3","services":["Bioimpedância","Fisioterapia","Pilates","Aula experimental","Sala VIP","Plano Kids"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Própria"},"PIMENTAS":{"hours":"24H","phone":"11 96242-9784","parking":"Gratuito","services":["Bioimpedância","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"POA":{"hours":"24H","phone":"11 94019-7568","parking":"Sim","services":["Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"MOOCA":{"hours":"Seg-Sex 5h–0h / Sab-Dom-Fer 7h–22h","phone":"(11) 2215-5404","parking":"2h grátis, após R$30","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"CASTELÃO":{"hours":"24H","phone":"(85) 3400-0130","parking":"120 vagas no pátio","services":["Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"PALMAS":{"hours":"24H","phone":"63 98121-3505","parking":"Próprio, horário livre","services":["Bioimpedância","Pilates","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"SANTO ANDRÉ":{"hours":"24H","phone":"11 99132-5597","parking":"Gratuito – Travessa do Jardim","services":["Sala VIP","Valet"],"pcd":true,"plans":"TP2 / Basic+","model":"Própria"},"TAQUARALTO":{"hours":"24H","phone":"(63) 9122-9392","parking":"Sim – 24H","services":["Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"ITAIM I":{"hours":"Seg-Sex 5h–1h / Sab-Dom-Fer 7h–22h","phone":"4233-1283","parking":"Grátis (horário do supermercado Sonda)","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP","Plano Kids","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"AMERICANA":{"hours":"24H","phone":"19 99645-0289","parking":"24H gratuito","services":["Pilates","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"ALPHAVILLE":{"hours":"24H","phone":"11 92046-2138","parking":"Sim (máx 2h)","services":["Bioimpedância","Pilates","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Silver+ / Totalpass TP3","model":"Própria"},"PINHEIROS":{"hours":"24H","phone":"(11) 94540-8190","parking":"5 vagas – R$15/2h","services":["Bioimpedância","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Silver+ / Totalpass TP4","model":"Franquia"},"VARGEM GRANDE":{"hours":"24H","phone":"(11) 3500-6061","parking":"2h grátis no Shopping Ecomall","services":["Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"ARUJÁ":{"hours":"24h (fds auxiliares 6h–21h)","phone":"+55 11 99980-0169","parking":"24h (fds auxiliares 6h–21h)","services":["Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Em breve","model":"Franquia"},"ITAPEVI":{"hours":"24H","phone":"(11) 94806-6667","parking":"30 vagas – 24H","services":["Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"MOGI GUAÇU":{"hours":"24H","phone":"(19) 98706-7290","parking":"Sim","services":["Aula experimental","Valet"],"pcd":true,"plans":"TP1+ / Basic+","model":"Própria"},"RIO BRANCO":{"hours":"24H","phone":"11 92222-4520","parking":"2h grátis, após R$5","services":["Bioimpedância","Nutricionista","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"TP2 / Basic+","model":"Franquia"},"SÃO VICENTE":{"hours":"24H","phone":"13 99130-9731","parking":"Estacionamento na rua","services":["Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"SAÚDE":{"hours":"24H","phone":"(11) 5589-3330","parking":"Grátis 24H","services":["Bioimpedância","Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic / Totalpass TP3","model":"Própria"},"AEROPORTO":{"hours":"24H","phone":"(11) 5034-5188","parking":"Grátis 24H","services":["Bioimpedância","Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Própria"},"GUARUJÁ":{"hours":"24H","phone":"13 99144-9393","parking":"5 vagas laterais","services":["Sala VIP"],"pcd":true,"plans":"TP2 / Basic+","model":"Própria"},"ITAPETININGA":{"hours":"24H","phone":"15 99173-7768","parking":"Sim","services":["Aula experimental","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"RIBEIRÃO":{"hours":"24H","phone":"16 99633-8005","parking":"Grátis 24H","services":["Bioimpedância","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"PERDIZES":{"hours":"24H","phone":"(11) 3803-9068","parking":"R$5/h aluno (Seg-Sex 7h–22h)","services":["Bioimpedância","Aula experimental"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP3","model":"Própria"},"JABAQUARA":{"hours":"24H","phone":"11 96186-4736","parking":"Cortesia","services":["Aula experimental","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"TP2 / Basic+","model":"Própria"},"ATIBAIA":{"hours":"24H","phone":"(11) 99372-6431","parking":"Grátis 3h, após R$15","services":["Bioimpedância","Nutricionista","Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"PRAIA GRANDE":{"hours":"24H","phone":"13 97809-6288","parking":"Gratuito","services":["Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"TAUBATÉ":{"hours":"24H","phone":"12 99184-4581","parking":"Próprio – gratuito","services":["Aula experimental","Sala VIP","Bicicletário"],"pcd":false,"plans":"TP1+ / Basic+","model":"Franquia"},"VILA MARIA":{"hours":"24H","phone":"(11) 96665-9439","parking":"Gratuito, 6h–22h","services":["Pilates","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Franquia"},"RIO DAS PEDRAS":{"hours":"24H","phone":"11 96373-0438","parking":"Gratuito (todos os dias 6h–0h)","services":["Aula experimental","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"SOROCABA":{"hours":"24H – segunda a segunda","phone":"11 99423-2496","parking":"—","services":["Bioimpedância","Bicicletário","Valet"],"pcd":false,"plans":"TP2 / Basic+","model":"Franquia"},"TAIPAS":{"hours":"Seg 5h → Sab 19h / Dom 6h–19h","phone":"(11) 9 3040-8272","parking":"Seg-Sex 6h–22h / Sab 8h–17h","services":["Aula experimental","Plano Kids","Valet"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"ARICANDUVA":{"hours":"24H","phone":"(11) 91421-2347","parking":"Grátis 24H","services":["Aula experimental","Bicicletário","Valet"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"JARAGUÁ":{"hours":"24H","phone":"(11) 91529-0224","parking":"40 vagas – 24H","services":["Pilates","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1","model":"Franquia"},"IPIRANGA":{"hours":"24H","phone":"(11) 99870-7610","parking":"Grátis 24H","services":["Nutricionista","Pilates","Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"CARRÃO":{"hours":"Seg 5h → Sex 0h / Fer 8h–18h / Dom 8h–16h","phone":"11 95815-4467","parking":"Gratuito","services":[],"pcd":true,"plans":"TP1+ / Basic+","model":"Franquia"},"PONTE ESTAIADA":{"hours":"24H","phone":"11 98037-7199","parking":"2h30 grátis, após R$10","services":["Bioimpedância","Pilates","Sala VIP","Valet"],"pcd":true,"plans":"TP3 / Silver+","model":"Franquia"},"CUIABÁ":{"hours":"24H","phone":"(65) 99915-1849","parking":"Gratuito","services":["Sala VIP"],"pcd":true,"plans":"TP2 / Basic+","model":"Própria"},"VILA MADALENA":{"hours":"24H","phone":"(11) 3815-5757","parking":"6h–22h grátis 2h, R$10/h adicional","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Própria"},"ARAGUAÍNA":{"hours":"24H","phone":"63 9120-9470","parking":"Sim","services":["Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"CONSOLAÇÃO":{"hours":"24H","phone":"11 94460-3995","parking":"Sim","services":["Bioimpedância","Bicicletário","Valet"],"pcd":true,"plans":"Silver (pico) / TP3","model":"Franquia"},"METRÔ SAPOPEMBA":{"hours":"24H","phone":"11 92215-1021","parking":"Gratuito para alunos","services":["Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"TP1+ / Basic+","model":"Franquia"},"PATTEO KLABIN":{"hours":"5h–0h / Fds e Fer 8h–16h","phone":"11 98948-0039","parking":"Cortesia 2h (mall)","services":[],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"ARACATI":{"hours":"24H","phone":"88 92162-8199","parking":"103 vagas (carros e motos)","services":["Pilates","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"FEIRA DE SANTANA":{"hours":"24H","phone":"75 3024-5629","parking":"Estacionamento do shopping","services":["Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Basic+ / TP2","model":"Própria"},"VILA MATILDE":{"hours":"24H","phone":"11 93929-3929","parking":"Gratuito","services":["Aula experimental"],"pcd":true,"plans":"TP2 / Basic+","model":"Franquia"},"VILA LEOPOLDINA":{"hours":"24H","phone":"11 96759-4237","parking":"8 vagas grátis c/ manobrista + conveniado 25 vagas","services":["Bioimpedância","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Franquia"},"SHOPPING TRIMAIS":{"hours":"Seg-Sex 5h45–0h / Fds 7h–19h","phone":"(11) 3164-9155","parking":"3h grátis, após tarifa do shopping","services":["Bioimpedância","Fisioterapia","Nutricionista","Pilates","Aula experimental","Sala VIP","Plano Kids","Bicicletário"],"pcd":true,"plans":"Gympass Basic / Totalpass TP3","model":"Própria"},"PAULISTA":{"hours":"24H","phone":"(11) 3285-3269","parking":"R$5 1ª hora / R$1 demais – Rua dos Ingleses 297","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic / Totalpass TP2","model":"Própria"},"TREMEMBÉ":{"hours":"24H","phone":"(11) 2263-2207","parking":"Grátis frente e subsolo – 24H","services":["Bioimpedância","Fisioterapia","Aula experimental","Sala VIP","Plano Kids","Bicicletário"],"pcd":false,"plans":"Gympass Basic / Totalpass TP2","model":"Própria"},"VILA GALVÃO":{"hours":"24H","phone":"(11) 2452-8635","parking":"Grátis 24H","services":["Bioimpedância","Fisioterapia","Nutricionista","Aula experimental","Sala VIP","Plano Kids","Bicicletário","Valet"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"VILA GUSTAVO":{"hours":"Seg-Sab 5h–18h / Dom 8h–18h","phone":"(11) 91231-4596","parking":"Grátis (mesmo horário)","services":["Bioimpedância","Pilates","Aula experimental","Plano Kids","Bicicletário"],"pcd":false,"plans":"Gympass Basic / Totalpass TP1+","model":"Própria"},"MARGINAL":{"hours":"24H","phone":"11 98146-5521","parking":"50 vagas carros + 33 motos (manobrista)","services":["Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"TP3 / Basic+","model":"Própria"},"LIMÃO":{"hours":"24H","phone":"(11) 99222-1696","parking":"Grátis portão principal 24H","services":["Bioimpedância","Nutricionista","Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"PARAPUÃ":{"hours":"24H","phone":"11 99219-3608","parking":"Grátis 5h–22h","services":["Bioimpedância","Aula experimental"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"ALTO DE SANTANA":{"hours":"24H","phone":"(11) 2239-7139","parking":"Avulso R$5 carro / R$1 moto | Mensal R$50 carro","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Própria"},"BARREIRA GRANDE":{"hours":"Seg-Sex 24H / Sab-Fer 8h–18h / Dom 8h–16h","phone":"11 93222-7986","parking":"Sim","services":[],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"BAURU":{"hours":"24H","phone":"14 99194-2353","parking":"Sim","services":["Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"CACHOEIRINHA":{"hours":"24H","phone":"(11) 96641-1928","parking":"Grátis 6h–23h todos os dias","services":["Bioimpedância","Aula experimental","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"CAMPINAS":{"hours":"24H","phone":"(19) 99400-0198","parking":"Grátis 24H","services":["Fisioterapia","Nutricionista","Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Silver / Totalpass TP3","model":"Franquia"},"CANGAÍBA":{"hours":"24H","phone":"11 82184-7912","parking":"Sim","services":["Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / TP3","model":"Franquia"},"CARAPICUÍBA":{"hours":"24H","phone":"11 96321-7961","parking":"1h30 grátis, após R$4/h","services":["Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"CELSO GARCIA":{"hours":"24H","phone":"11 91191-8569","parking":"Grátis 24H (ao lado)","services":[],"pcd":false,"plans":"TP1+ / Basic+","model":"Própria"},"CUMBICA":{"hours":"24H","phone":"+55 11 94074-7584","parking":"—","services":[],"pcd":false,"plans":"Basic+ / TP1+","model":"Própria"},"DIADEMA":{"hours":"24H","phone":"(11) 94115-1264","parking":"Grátis 24H","services":["Nutricionista","Aula experimental","Bicicletário"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP3","model":"Franquia"},"FAST TREINO":{"hours":"24H","phone":"11 98877-1847","parking":"—","services":[],"pcd":false,"plans":"—","model":"Própria"},"FERRAZÓPOLIS":{"hours":"24H","phone":"11 97774-2396","parking":"Sim","services":["Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / TP1+","model":"Franquia"},"FORTALEZA I":{"hours":"24H","phone":"(85) 3077-0041","parking":"Grátis 24H","services":["Bioimpedância","Pilates","Sala VIP","Plano Kids","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"FORTALEZA II":{"hours":"24H","phone":"85 3037-9746","parking":"Grátis 24H","services":["Bioimpedância","Fisioterapia","Pilates","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"HORTO":{"hours":"24H","phone":"(11) 2259-8105","parking":"Grátis 5h30–1h","services":["Bioimpedância","Aula experimental","Sala VIP","Plano Kids","Bicicletário"],"pcd":true,"plans":"TP1+ / Basic+","model":"Própria"},"ITAIM II":{"hours":"24H","phone":"(11) 2571-4341","parking":"30 vagas grátis 6h–0h","services":["Bioimpedância","Fisioterapia","Pilates","Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"ITAQUAQUECETUBA":{"hours":"24H","phone":"11 95456-2632","parking":"Sim","services":["Pilates","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"JOÃO PESSOA":{"hours":"24H","phone":"(83) 9170-8863","parking":"Sim","services":["Fisioterapia","Nutricionista","Pilates","Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"JOINVILLE":{"hours":"24H","phone":"(47) 9 9635-6955","parking":"Grátis ao redor 24H + Estac. JK até 0h","services":["Bioimpedância","Fisioterapia","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"LAJEADO":{"hours":"Seg-Sex 24H / Sab até 20h / Dom 6h–20h","phone":"(11) 98482-4994","parking":"Grátis Seg-Sex 6h–0h / Sab 6h–20h","services":["Aula experimental"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"LENÇÓIS PAULISTA":{"hours":"24H","phone":"14 99122-9100","parking":"Gratuito","services":["Sala VIP"],"pcd":true,"plans":"TP1+ / Basic+","model":"Própria"},"OCEANIA":{"hours":"—","phone":"—","parking":"—","services":[],"pcd":false,"plans":"Silver / TP3","model":"Própria"},"PIRITUBA":{"hours":"24H","phone":"(11) 91298-2868","parking":"Conveniado R$2/2h – 24H","services":["Bioimpedância","Nutricionista","Pilates","Plano Kids"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP3","model":"Franquia"},"RECIFE":{"hours":"24H","phone":"81 95568-804","parking":"40 vagas carros + 20 motos","services":[],"pcd":true,"plans":"TP2 / Basic+","model":"Própria"},"SBC":{"hours":"Seg-Sex 24H / Sab 8h–18h / Dom 8h–14h","phone":"11 91605-9118","parking":"Grátis até 2h, após R$10","services":["Nutricionista","Aula experimental","Plano Kids","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Franquia"},"SÃO MATEUS":{"hours":"24H","phone":"11 94729-0446","parking":"Vagas limitadas – Rua Paulo de Queiroz 1056","services":["Bicicletário","Valet"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"SAPOPEMBA":{"hours":"24H","phone":"11 3624-3068","parking":"Grátis 24H","services":["Sala VIP","Plano Kids","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"SIQUEIRA BUENO":{"hours":"24H","phone":"11 94026-6214","parking":"27 vagas – 24H","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"TABOÃO 2":{"hours":"24H","phone":"(11) 92139-2892","parking":"Gratuito","services":["Aula experimental","Sala VIP"],"pcd":true,"plans":"Basic+ / TP2","model":"Franquia"},"VILA AUGUSTA":{"hours":"24H","phone":"—","parking":"—","services":["Sala VIP"],"pcd":true,"plans":"Totalpass TP2 / Gympass Basic+","model":"Própria"}};
+
+const SVC_ICONS={"Bioimpedância":"⚖️","Fisioterapia":"🏥","Nutricionista":"🥗","Pilates":"🧘","Aula experimental":"🎯","Sala VIP":"⭐","Plano Kids":"👶","Bicicletário":"🚲","Valet":"🚗"};
+
+const B='https://www.academiagavioes.com.br/templates/yootheme/cache/';
+const unitThumbs={
+  "AEROPORTO":B+"bd/2-bd874273.webp","ALDEOTA":B+"47/1-47586ffc.webp",
+  "ALTO DE SANTANA":B+"20/1-20065ced.webp","AMERICANA":B+"5c/01-5cd16f17.webp",
+  "ALPHAVILLE":B+"de/5-deb54c21.webp","ARACATI":B+"c8/AG-ARA_RENDERS_R01_31_-_Foto-c8c9255e.webp",
+  "ARAGUAÍNA":B+"e4/AG-PALMASIII_RENDER_R00_14_-_Foto-e4cf2a36.webp","ARICANDUVA":B+"77/1-77d3f7cd.webp",
+  "ARUJÁ":B+"47/1-471398c1.webp","ATIBAIA":B+"bf/IMG_7421-bf95847d.jpeg",
+  "BAURU":B+"20/1-203c7d47.webp","BARREIRA GRANDE":B+"db/5-db981fd6.webp",
+  "CACHOEIRINHA":B+"83/1-83d4ce32.webp","CAMPINAS":B+"3f/AG-CAM_RENDER_R00_1_-_Photo-3f695ecd.webp",
+  "CANGAÍBA":B+"cf/1-cfa779b9.webp","CARAPICUÍBA":B+"a2/1-a246a3a0.webp",
+  "CARRÃO":B+"50/1-5084efd8.webp","CASTELÃO":B+"18/Castelo-18b78fc5.webp",
+  "CELSO GARCIA":B+"e4/1-e45f0125.webp","CONSOLAÇÃO":B+"ab/1-abdaaefa.webp",
+  "CUIABÁ":B+"22/1-22d16748.webp","CUMBICA":B+"88/1-88f922a5.webp",
+  "DIADEMA":B+"e3/WhatsApp_Image_2023-06-15_at_19.03.36-e3f7f414.webp",
+  "FEIRA DE SANTANA":B+"ff/1-fffce343.webp","FERRAZÓPOLIS":B+"cd/1-cdddcd8c.png",
+  "FORTALEZA I":B+"a1/WhatsApp_Image_2022-09-03_at_16.16.24-a153f8d7.webp",
+  "FORTALEZA II":B+"a3/4779d45c-6679-4f2d-8e17-d69944e13723-a3d2c660.webp",
+  "GUARUJÁ":B+"3a/1-3ad54e2e.webp","HORTO":B+"22/6-22669be4.webp",
+  "IPIRANGA":B+"9b/4-9b3c57f4.webp","ITAIM I":B+"a5/1-a55e681f.webp",
+  "ITAIM II":B+"73/001-73795833.webp","ITAPETININGA":B+"ae/01-ae78b4ec.webp",
+  "ITAPEVI":B+"05/AG-ITAPEVI_RENDER_R01_1%20-%20Photo-0568a26c.webp",
+  "ITAQUAQUECETUBA":B+"4f/1-4f2c123b.webp","JABAQUARA":B+"14/1-14b8c606.png",
+  "JARAGUÁ":B+"61/1-61bea919.webp","JOÃO PESSOA":B+"84/001-840c2b8f.webp",
+  "JOINVILLE":B+"c5/4779d45c-6679-4f2d-8e17-d69944e13723-c5e1e5d0.webp",
+  "LAJEADO":B+"9a/3-9a268f6e.webp","LENÇÓIS PAULISTA":B+"84/1-84e1e56e.webp",
+  "LIMÃO":B+"45/0001-45f6886a.webp","MARGINAL":B+"3b/1-3b5ce5af.webp",
+  "METRÔ SAPOPEMBA":B+"00/1%202-00308e35.webp","MOGI GUAÇU":B+"3a/1%203-3aa6834d.webp",
+  "MONDUBIM":B+"a2/1-a22b47f2.webp","MOOCA":B+"9b/1-9b18e684.webp",
+  "OCEANIA":B+"60/1-60280d1c.webp","PALMAS":B+"5f/4779d45c-6679-4f2d-8e17-d69944e13723-5f67abfd.webp",
+  "PARAPUÃ":B+"84/6-849100a5.webp","PATTEO KLABIN":B+"1e/5-1ec307db.webp",
+  "PAULISTA":B+"e9/1-e905767d.webp","PENHA":B+"9c/3-9cb24f99.webp",
+  "PERDIZES":B+"64/2-642ae522.webp","PINHEIROS":B+"94/01-9469f3bb.webp",
+  "PIRITUBA":B+"1c/1-1cd9fa03.webp","POA":B+"7f/01-7f33dce7.webp",
+  "PONTE ESTAIADA":B+"37/1-3714677a.webp","PRAIA GRANDE":B+"77/2-77ed0849.webp",
+  "RECIFE":B+"f7/1-f74e4b4f.webp","RIBEIRÃO":B+"f3/4779d45c-6679-4f2d-8e17-d69944e13723-f3aa39e7.webp",
+  "RIO BRANCO":B+"c3/1-c3e5a822.webp","RIO DAS PEDRAS":B+"d2/1-d2602de3.webp",
+  "SANTO ANDRÉ":B+"44/Santo%20Andre%201-44274903.png","SBC":B+"57/1%20-572bfb3a.png",
+  "SÃO MATEUS":B+"db/1-db2a3a47.webp","SÃO MIGUEL":B+"9c/1-9ced9981.webp",
+  "SÃO VICENTE":B+"a3/1-a3482f4c.webp","SAPOPEMBA":B+"b8/1-b86a65e3.webp",
+  "SAÚDE":B+"e9/5-e91a5a40.webp","SHOPPING TRIMAIS":B+"2b/5-2ba81d41.webp",
+  "SIQUEIRA BUENO":B+"85/2-8534145c.webp","SOROCABA":B+"2d/1-2d905eb2.png",
+  "TABOÃO":B+"e3/6-e3a427b3.webp","TABOÃO 2":B+"c7/1-c7c17a3e.webp",
+  "TAIPAS":B+"81/1-8117a4c5.webp","TAQUARALTO":B+"77/1-77be29bd.webp",
+  "TAUBATÉ":B+"79/1-79781ec3.webp","TREMEMBÉ":B+"7e/6-7e9fab80.webp",
+  "VARGEM GRANDE":B+"cc/1-cca0f296.webp","VILA AUGUSTA":B+"e6/1-e69ede2a.webp",
+  "VILA GALVÃO":B+"ef/1-effe23ad.webp","VILA GUSTAVO":B+"3d/3-3de9e1e1.webp",
+  "VILA LEOPOLDINA":B+"60/5-60e134ca.webp","VILA MADALENA":B+"ae/1-aedd60a8.webp",
+  "VILA MARIA":B+"69/2-6989d1d5.webp","VILA MATILDE":B+"6e/1-6ee53d67.webp",
+  "FAST TREINO":B+"de/5-deb54c21.webp"
+};
+function normName(n){return n.toUpperCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim()}
+function getDados(nome){const k=normName(nome);for(const[key,val]of Object.entries(dadosUnidades)){if(normName(key)===k)return val}return null}
+
+// Unit markers map for fly-to
+const markerMap={};
+
+function renderUnits(q){
+  const c=document.getElementById('unit-cards'),lbl=document.getElementById('unit-label');
+  const f=unidades.filter(u=>!q||u.nome.toLowerCase().includes(q)||u.end.toLowerCase().includes(q));
+  lbl.textContent=`${f.length} unidade${f.length!==1?'s':''} encontrada${f.length!==1?'s':''}`;
+  if(!f.length){c.innerHTML=`<div class="empty" style="grid-column:1/-1"><div class="empty-icon">🔍</div>Nenhuma unidade encontrada.</div>`;return}
+  c.innerHTML=f.map(u=>{
+    const d=getDados(u.nome)||{};
+    const chips=(d.services||[]).map(s=>`<span class="unit-chip">${SVC_ICONS[s]||''} ${s}</span>`).join('');
+    const modelClass=d.model==='Franquia'?'model-franquia':'model-propria';
+    const id='uc-'+normName(u.nome);
+    return`<div class="unit-card" id="${id}" onclick="selectUnit('${u.nome}',${u.lat},${u.lon})">
+      <div class="unit-card-header">
+        <div class="unit-card-name">${u.nome}</div>
+        <span class="unit-card-model ${modelClass}">${d.model||''}</span>
+      </div>
+      <div class="unit-card-addr">📍 ${u.end}</div>
+      <div class="unit-card-hours">🕐 ${d.hours||'—'}</div>
+      <div class="unit-card-body">
+        ${d.phone&&!d.phone.match(/^0+$/)&&d.phone!=='—'?`<div class="unit-detail-row"><span class="unit-detail-icon">📞</span>${d.phone}</div>`:''}
+        ${d.parking&&d.parking!=='—'?`<div class="unit-detail-row"><span class="unit-detail-icon">🅿️</span>${d.parking}</div>`:''}
+        ${d.plans&&d.plans!=='—'?`<div class="unit-detail-row"><span class="unit-detail-icon">💳</span>${d.plans}</div>`:''}
+        ${chips?`<div class="unit-chips">${chips}</div>`:''}
+        ${d.pcd?`<span class="unit-pcd">♿ Acessível PCD</span>`:''}
+      </div>
+      <button class="unit-expand-btn" onclick="event.stopPropagation();toggleUnit(this)">
+        <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+        Ver detalhes
+      </button>
+    </div>`}).join('');
+}
+function toggleUnit(btn){
+  const card=btn.closest('.unit-card');
+  card.classList.toggle('open');
+  btn.innerHTML=card.classList.contains('open')
+    ?'<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m18 15-6-6-6 6"/></svg> Fechar'
+    :'<svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg> Ver detalhes';
+}
+
+function selectUnit(nome, lat, lon){
+  // Highlight selected card
+  document.querySelectorAll('.unit-card').forEach(c=>c.classList.remove('selected'));
+  const normKey = normName(nome);
+  const card = document.getElementById('uc-'+normKey);
+  if(card) card.classList.add('selected');
+
+  // Show preview
+  const thumb = Object.entries(unitThumbs).find(([k])=>normName(k)===normKey)?.[1];
+  const u = unidades.find(u=>normName(u.nome)===normKey);
+  const inner = document.getElementById('unit-preview-inner');
+  const img = document.getElementById('preview-img');
+  const ph = document.getElementById('preview-placeholder');
+  const info = document.getElementById('preview-info');
+  document.getElementById('preview-name').textContent = nome;
+  document.getElementById('preview-addr').textContent = u ? u.end : '';
+  const d2 = getDados(nome);
+  document.getElementById('preview-hours').textContent = d2?.hours ? '🕐 '+d2.hours : '';
+  info.style.display='block';
+
+  if(thumb){
+    img.src = thumb;
+    img.alt = nome;
+    img.style.display='block';
+    ph.style.display='none';
+    inner.classList.add('has-img');
+  } else {
+    img.style.display='none';
+    ph.style.display='flex';
+    inner.classList.remove('has-img');
+  }
+}
+renderUnits('');
+
+// ── MAP ──
+let mapInstance=null;
+function toggleMap(){
+  const c=document.getElementById('map-container'),ch=document.getElementById('map-chevron'),h=document.querySelector('.map-header');
+  const open=c.style.display!=='none';
+  c.style.display=open?'none':'block';
+  ch.classList.toggle('open',!open);h.classList.toggle('open',!open);
+  if(!open&&!mapInstance)initMap();
+  else if(!open)setTimeout(()=>mapInstance.invalidateSize(),100);
+}
+
+function buildTooltip(nome,end,d){
+  if(!d)return`<div class="tip-card"><div class="tip-header"><img class="tip-logo" src="${LOGO}"><div><div class="tip-name">${nome}</div></div></div><div class="tip-row"><span class="tip-icon">📍</span>${end}</div></div>`;
+  const chips=(d.services||[]).map(s=>`<span class="tip-chip">${SVC_ICONS[s]||''} ${s}</span>`).join('');
+  return`<div class="tip-card"><div class="tip-header"><img class="tip-logo" src="${LOGO}" onerror="this.style.display='none'"><div><div class="tip-name">${nome}</div><div class="tip-model">${d.model||''}</div></div></div>
+    <div class="tip-row"><span class="tip-icon">🕐</span>${d.hours||'24H'}</div>
+    ${d.phone&&!d.phone.match(/^0+$/)&&d.phone!=='—'?`<div class="tip-row"><span class="tip-icon">📞</span>${d.phone}</div>`:''}
+    ${d.parking&&d.parking!=='—'?`<div class="tip-row"><span class="tip-icon">🅿️</span>${d.parking}</div>`:''}
+    ${d.plans&&d.plans!=='—'?`<div class="tip-row"><span class="tip-icon">💳</span>${d.plans}</div>`:''}
+    ${chips?`<div class="tip-chips">${chips}</div>`:''}
+    ${d.pcd?`<span class="tip-pcd">♿ Acessível PCD</span>`:''}
+  </div>`;
+}
+
+function initMap(){
+  mapInstance=L.map('map').setView([-15.5,-47.5],4);
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19}).addTo(mapInstance);
+  const icon=L.divIcon({className:'',html:`<div style="width:32px;height:32px;border-radius:6px;overflow:hidden;box-shadow:0 2px 10px rgba(229,62,62,.5)"><img src="${LOGO}" style="width:32px;height:32px;object-fit:cover" onerror="this.parentElement.style.background='#111';this.parentElement.innerHTML='🦅'"></div>`,iconSize:[32,32],iconAnchor:[16,16],popupAnchor:[0,-20]});
+  unidades.forEach(u=>{
+    const m=L.marker([u.lat,u.lon],{icon}).addTo(mapInstance)
+      .bindTooltip(buildTooltip(u.nome,u.end,getDados(u.nome)),{className:'gavioes-tip',direction:'top',offset:[0,-10],opacity:1});
+    markerMap[normName(u.nome)]=m;
+  });
+}
+
+function flyToUnit(nome,lat,lon){
+  selectUnit(nome,lat,lon);
+  const container=document.getElementById('map-container');
+  if(container.style.display==='none'){
+    toggleMap();
+    setTimeout(()=>_doFly(nome,lat,lon),600);
+  } else {
+    _doFly(nome,lat,lon);
+  }
+  setTimeout(()=>container.scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+function _doFly(nome,lat,lon){
+  if(!mapInstance)return;
+  mapInstance.flyTo([lat,lon],15,{animate:true,duration:1.2});
+  // Open tooltip on the marker
+  const m=markerMap[normName(nome)];
+  if(m){
+    setTimeout(()=>{
+      m.openTooltip();
+      // Pulse the marker element
+      const el=m.getElement();
+      if(el){el.querySelector('div').classList.add('marker-pulse');setTimeout(()=>el.querySelector('div').classList.remove('marker-pulse'),3000);}
+    },1300);
+  }
+}
+
+// ══ UTILS ══
+function copyEmail(){navigator.clipboard.writeText('sac@academiagavioes.com.br').then(()=>showToast('E-mail copiado!'))}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+</script>
+</body>
+</html>
