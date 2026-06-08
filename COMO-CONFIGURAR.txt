@@ -1,0 +1,149 @@
+╔══════════════════════════════════════════════════════════════════╗
+║   PLAYBOOK GAVIÕES 24H — COMO ATIVAR A EDIÇÃO EM TEMPO REAL        ║
+║   (guia passo a passo, sem precisar saber programar)               ║
+╚══════════════════════════════════════════════════════════════════╝
+
+O que você vai conseguir no final:
+  • Você e mais uma pessoa entram com e-mail e senha e editam o Playbook.
+  • Tudo que for alterado é salvo na nuvem e aparece para os dois NA HORA.
+  • Quem não tem login só consegue VISUALIZAR (não edita).
+
+⚠️ ENQUANTO o Firebase não estiver configurado, o Playbook funciona em
+   "MODO DEMONSTRAÇÃO": mostra os dados, mas o botão de editar não salva.
+   É só seguir os passos abaixo uma única vez.
+
+────────────────────────────────────────────────────────────────────
+PASSO 1 — CRIAR O PROJETO NO FIREBASE
+────────────────────────────────────────────────────────────────────
+1. Acesse:  https://console.firebase.google.com
+2. Faça login com sua conta Google.
+3. Clique em "Criar um projeto" (ou "Add project").
+4. Dê um nome, ex.: playbook-gavioes  →  Continuar.
+5. Pode DESATIVAR o Google Analytics (não é necessário) → Criar projeto.
+6. Aguarde e clique em "Continuar".
+
+────────────────────────────────────────────────────────────────────
+PASSO 2 — CRIAR O BANCO DE DADOS (Firestore)
+────────────────────────────────────────────────────────────────────
+1. No menu da esquerda: Criar (Build) → "Firestore Database".
+2. Clique em "Criar banco de dados".
+3. Escolha o local (location): "southamerica-east1 (São Paulo)" → Avançar.
+4. Selecione "Iniciar no modo de produção" → Criar.
+
+────────────────────────────────────────────────────────────────────
+PASSO 3 — DEFINIR AS REGRAS DE SEGURANÇA
+────────────────────────────────────────────────────────────────────
+1. Ainda no Firestore, abra a aba "Regras" (Rules), no topo.
+2. APAGUE tudo que estiver lá e COLE exatamente isto:
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /{document=**} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+  }
+}
+
+3. Clique em "Publicar" (Publish).
+
+   (Isso significa: qualquer um pode VER; só quem fez login pode EDITAR.)
+
+────────────────────────────────────────────────────────────────────
+PASSO 4 — ATIVAR O LOGIN POR E-MAIL E SENHA
+────────────────────────────────────────────────────────────────────
+1. Menu da esquerda: Criar (Build) → "Authentication".
+2. Clique em "Vamos começar" (Get started).
+3. Na aba "Sign-in method", clique em "E-mail/senha".
+4. Ative a primeira chave (Ativar) → Salvar.
+
+────────────────────────────────────────────────────────────────────
+PASSO 5 — CRIAR OS 2 USUÁRIOS (VOCÊ E A OUTRA PESSOA)
+────────────────────────────────────────────────────────────────────
+1. Em Authentication, abra a aba "Users".
+2. Clique em "Adicionar usuário".
+3. Digite o e-mail e uma senha (mín. 6 caracteres) → Adicionar.
+4. Repita para a segunda pessoa.
+   (Guardem bem esses e-mails/senhas — é o login de edição.)
+
+────────────────────────────────────────────────────────────────────
+PASSO 6 — PEGAR AS "CONFIGURAÇÕES" DO PROJETO
+────────────────────────────────────────────────────────────────────
+1. Clique na engrenagem ⚙ (ao lado de "Visão geral do projeto") →
+   "Configurações do projeto".
+2. Desça até "Seus aplicativos" e clique no ícone "</>" (Web).
+3. Dê um apelido, ex.: playbook → "Registrar app".
+   (NÃO precisa marcar "Firebase Hosting" agora.)
+4. Vai aparecer um trecho com "const firebaseConfig = { ... }".
+   Copie SÓ o conteúdo de dentro das chaves { }. Ex.:
+
+   apiKey: "AIzaSy...."
+   authDomain: "playbook-gavioes.firebaseapp.com"
+   projectId: "playbook-gavioes"
+   storageBucket: "playbook-gavioes.appspot.com"
+   messagingSenderId: "123456789"
+   appId: "1:123...:web:abc..."
+
+────────────────────────────────────────────────────────────────────
+PASSO 7 — COLAR AS CONFIGURAÇÕES NO ARQUIVO index.html
+────────────────────────────────────────────────────────────────────
+1. Abra o arquivo "index.html" com o Bloco de Notas
+   (botão direito → Abrir com → Bloco de Notas).
+2. Use Ctrl+L / Ctrl+G ou role até encontrar a linha:
+        const firebaseConfig = {
+   (está perto do final do arquivo).
+3. Troque os valores "SUA_API_KEY", "SEU_PROJETO" etc. pelos SEUS valores
+   do Passo 6. Mantenha as aspas e as vírgulas. Deve ficar assim:
+
+   const firebaseConfig = {
+     apiKey: "AIzaSy....",
+     authDomain: "playbook-gavioes.firebaseapp.com",
+     projectId: "playbook-gavioes",
+     storageBucket: "playbook-gavioes.appspot.com",
+     messagingSenderId: "123456789",
+     appId: "1:123...:web:abc..."
+   };
+
+4. Salve (Ctrl+S) e feche.
+
+   >>> Se tiver qualquer dúvida aqui, me mande o trecho que o Firebase
+       te deu e eu colo pra você. <<<
+
+────────────────────────────────────────────────────────────────────
+PASSO 8 — IMPORTAR OS DADOS PELA PRIMEIRA VEZ
+────────────────────────────────────────────────────────────────────
+1. Abra o index.html no navegador (dois cliques).
+2. Clique em "🔒 Entrar para editar" (canto superior direito) e
+   faça login com um dos usuários do Passo 5.
+3. Vai aparecer uma faixa amarela: "Importar dados iniciais". Clique nela.
+4. Pronto! Os 12 processos, 90 unidades e os projetos vão para a nuvem.
+   (Esse botão só aparece uma vez, enquanto o banco está vazio.)
+
+A partir daqui, ao logar, aparecem os botões ✏️ Editar / 🗑️ Excluir em
+cada item e o botão "＋" (canto inferior direito) para adicionar novos.
+Tudo o que você salvar aparece na hora para a outra pessoa logada.
+
+────────────────────────────────────────────────────────────────────
+PASSO 9 — DEIXAR ACESSÍVEL PARA OS DOIS (escolha UMA opção)
+────────────────────────────────────────────────────────────────────
+OPÇÃO A (mais simples, zero instalação):
+  Cada pessoa abre o MESMO index.html no seu próprio PC. Os dados
+  sincronizam pela nuvem do mesmo jeito. Bom para começar/testar.
+
+OPÇÃO B (link na internet — recomendado): GitHub Pages
+  Você já usa GitHub. Crie um repositório, suba o index.html e ative
+  "Pages". Dá um link tipo https://seu-usuario.github.io/playbook .
+  IMPORTANTE: nesse caso, no Firebase vá em Authentication → Settings →
+  "Authorized domains" → adicione o domínio "seu-usuario.github.io".
+
+OPÇÃO C: Firebase Hosting (precisa instalar o Node.js)
+  Me avise que eu te guio: instalar Node.js, depois os comandos
+  firebase login / firebase init / firebase deploy.
+
+────────────────────────────────────────────────────────────────────
+PRECISA DE AJUDA?
+  Volte aqui no chat e me diga em qual passo travou — eu resolvo com você.
+  O arquivo "index-ORIGINAL-backup.html" é a versão antiga, intacta,
+  caso precise voltar atrás.
+────────────────────────────────────────────────────────────────────

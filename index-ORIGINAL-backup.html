@@ -6,10 +6,6 @@
 <title>Playbook – Academia Gaviões 24h</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-<!-- Firebase (edição em tempo real) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
 <style>
 :root{
   --bg:#0f0f13;--surface:#1a1a22;--surface2:#22222e;--border:#2e2e3e;
@@ -250,55 +246,6 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--
 .sults-avatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#e53e3e,#7c2d2d);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
 .sults-name{font-weight:700;font-size:13px;color:var(--text)}
 .sults-time{margin-left:auto;font-size:12px;color:#4ade80;font-weight:700;background:rgba(34,197,94,.12);border:1px solid #166534;padding:4px 11px;border-radius:20px;white-space:nowrap}
-
-/* ══ AUTH / EDIÇÃO ══ */
-.topbar-auth{position:fixed;top:12px;right:16px;z-index:400;display:flex;align-items:center;gap:8px}
-.auth-info{font-size:11px;color:var(--text2);font-weight:600;background:var(--surface2);border:1px solid var(--border);padding:5px 10px;border-radius:20px}
-.auth-btn{background:var(--surface);border:1px solid var(--border);color:var(--text);font-size:11px;font-weight:600;padding:6px 12px;border-radius:20px;cursor:pointer;transition:all .2s}
-.auth-btn:hover{border-color:var(--accent);color:var(--accent)}
-.auth-btn.logout:hover{border-color:#ef4444;color:#ef4444}
-.admin-row{display:none;gap:6px;margin-top:10px;padding-top:10px;border-top:1px dashed var(--border)}
-body.editor .admin-row{display:flex}
-.admin-btn{background:var(--surface2);border:1px solid var(--border);color:var(--text2);font-size:11px;font-weight:600;padding:5px 10px;border-radius:7px;cursor:pointer;transition:all .2s}
-.admin-btn:hover{border-color:var(--accent);color:var(--accent)}
-.admin-btn.del:hover{border-color:#ef4444;color:#ef4444}
-.fab-add{display:none;position:fixed;bottom:22px;right:22px;width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;border:none;font-size:28px;line-height:1;cursor:pointer;box-shadow:0 6px 20px rgba(229,62,62,.45);z-index:400;transition:transform .2s}
-.fab-add:hover{transform:scale(1.08)}
-body.editor .fab-add{display:flex;align-items:center;justify-content:center}
-.seed-banner{display:none;align-items:center;justify-content:center;gap:12px;background:#2d1a00;border-bottom:1px solid #92400e;color:#fcd34d;font-size:12px;font-weight:600;padding:10px 16px;flex-wrap:wrap}
-.seed-banner button{background:var(--accent);color:#fff;border:none;padding:6px 14px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
-.modal-footer{display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--border)}
-.primary-btn{background:var(--accent);color:#fff;border:none;padding:10px 18px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;width:100%}
-.modal-footer .primary-btn{width:auto}
-.primary-btn:hover{opacity:.9}
-.ghost-btn{background:var(--surface2);color:var(--text2);border:1px solid var(--border);padding:10px 16px;border-radius:9px;font-size:13px;font-weight:600;cursor:pointer}
-.ghost-btn:hover{color:var(--text)}
-.login-error{color:#fca5a5;font-size:12px;min-height:16px;margin:6px 0 10px}
-.fld{display:flex;flex-direction:column;gap:5px;font-size:12px;font-weight:600;color:var(--text2);margin-bottom:12px}
-.fld input,.fld textarea,.fld select{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:9px 11px;color:var(--text);font-size:13px;font-weight:400;outline:none;font-family:inherit;resize:vertical}
-.fld input:focus,.fld textarea:focus,.fld select:focus{border-color:var(--accent)}
-.fld-row{display:flex;gap:12px}
-.fld-row .fld{flex:1}
-.chk{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--text);font-weight:600;cursor:pointer;margin-bottom:10px}
-.chk.sm{font-size:11px;font-weight:500;margin-bottom:0}
-.chk input{width:15px;height:15px;accent-color:var(--accent)}
-.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;margin-top:5px}
-.passo-item{display:flex;gap:6px;margin-bottom:6px;align-items:flex-start}
-.passo-item textarea{flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:7px 9px;color:var(--text);font-size:12px;font-family:inherit;resize:vertical}
-.del-mini{background:#4a1515;border:1px solid #7f1d1d;color:#fca5a5;border-radius:6px;width:30px;flex-shrink:0;cursor:pointer;font-size:12px}
-.mini-btn{background:var(--surface2);border:1px dashed var(--border);color:var(--text2);border-radius:7px;padding:6px 12px;font-size:11px;font-weight:600;cursor:pointer;margin-top:4px}
-.mini-btn:hover{border-color:var(--accent);color:var(--accent)}
-#edit-body,#login-modal .modal-body{max-height:70vh;overflow-y:auto}
-.fld-hint{font-size:10px;font-weight:400;color:var(--text2);margin-top:-7px;margin-bottom:12px}
-/* Porta de entrada: enquanto não logado, esconde o app e mostra o login */
-body:not(.authed) .sidebar,
-body:not(.authed) .main,
-body:not(.authed) .topbar-auth,
-body:not(.authed) .seed-banner,
-body:not(.authed) .fab-add{display:none!important}
-body:not(.authed) #login-modal{display:flex!important}
-body:not(.authed) #login-modal .modal-close{display:none}
-.login-sub{font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:14px}
 </style>
 </head>
 <body>
@@ -429,51 +376,10 @@ body:not(.authed) #login-modal .modal-close{display:none}
   </div>
 </div>
 
-<!-- ══ BARRA DE LOGIN ══ -->
-<div class="topbar-auth">
-  <span id="auth-info" class="auth-info"></span>
-  <button class="auth-btn logout" id="btn-logout" style="display:none" onclick="doLogout()">Sair</button>
-</div>
-
-<!-- ══ BANNER IMPORTAR DADOS ══ -->
-<div class="seed-banner" id="seed-banner">
-  <span>📦 O banco de dados na nuvem está vazio.</span>
-  <button onclick="seedAll()">Importar dados iniciais</button>
-</div>
-
-<!-- ══ BOTÃO ADICIONAR ══ -->
-<button class="fab-add" id="fab-add" onclick="addForActiveTab()" title="Adicionar novo">＋</button>
-
-<!-- ══ MODAL LOGIN ══ -->
-<div class="modal-overlay" id="login-modal" onclick="if(event.target===this)closeLogin()">
-  <div class="modal" style="max-width:380px">
-    <div class="modal-header"><h2>🦅 Playbook Gaviões 24h</h2><button class="modal-close" onclick="closeLogin()" aria-label="Fechar">✕</button></div>
-    <div class="modal-body">
-      <div class="login-sub">Faça login para acessar. As unidades usam o login de <strong>visualização</strong>; a equipe usa o login de <strong>administrador</strong> para editar.</div>
-      <label class="fld">E-mail<input id="login-email" type="email" autocomplete="username" placeholder="seu@email.com"></label>
-      <label class="fld">Senha<input id="login-pass" type="password" autocomplete="current-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></label>
-      <div class="login-error" id="login-error"></div>
-      <button class="primary-btn" onclick="doLogin()">Entrar</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══ MODAL EDIÇÃO ══ -->
-<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)closeEdit()">
-  <div class="modal" style="max-width:520px">
-    <div class="modal-header"><h2 id="edit-title">Editar</h2><button class="modal-close" onclick="closeEdit()" aria-label="Fechar">✕</button></div>
-    <div class="modal-body" id="edit-body"></div>
-    <div class="modal-footer"><button class="ghost-btn" onclick="closeEdit()">Cancelar</button><button class="primary-btn" onclick="submitEdit()">Salvar</button></div>
-  </div>
-</div>
-
 <div class="toast" id="toast"></div>
 
 <script>
 const LOGO='https://academiagavioes24h.com.br/apps/transferencia/favicon.ico';
-
-// Dados ao vivo (preenchidos pelo Firebase em tempo real)
-let processos=[],unidades=[],dadosUnidades={},unitThumbs={},projetos=[],colaboradores=[],isEditor=false;
 
 // ══════════ TABS ══════════
 let activeTab='processos';
@@ -498,7 +404,7 @@ document.getElementById('search').addEventListener('input',e=>{
 });
 
 // ══════════ PROCESSOS ══════════
-const SEED_processos=[
+const processos=[
   {id:1,titulo:"Personal",dept:"WhatsApp",chamado:false,anexo:false,descricao:"Cadastro de personal trainer. O Inside Sales é o mesmo do SAC para envio de documentação e ativação do plano.",passos:["Criar cadastro do aluno no sistema.","Enviar o WhatsApp do Inside Sales: <span class='hl-green'>+55 11 94074-7584</span> — enviar <span class='hl-red'>CREF</span> e adicionar cartão de crédito para prosseguir.","Se o personal já tiver plano ativo, realizar direto na recepção — lançar <span class='hl-red'>\"Personal Start (adicional)\"</span>."]},
   {id:2,titulo:"Chargeback",dept:"SAC",chamado:false,anexo:false,descricao:"Explicação sobre a multa aplicada quando o aluno solicita estorno pela operadora do banco.",passos:["Explicar que o <span class='hl-red'>ChargeBack é uma multa</span>, aplicada após solicitar estorno pela operadora.","Informar o SAC: <span class='hl-green'>+55 11 94074-7584</span>, caso ainda tenha dúvidas."]},
   {id:3,titulo:"Cancelamento de Plano Parcelado",dept:"E-mail",chamado:true,anexo:false,descricao:"O aluno deve solicitar o cancelamento por e-mail, informando dados pessoais.",passos:["Informar o e-mail: <span class='hl-blue'>sac@academiagavioes.com.br</span>","Orientar que o e-mail deve conter: <span class='hl-red'>nome completo, CPF, unidade e motivo</span>.","Avisar que o atendimento só ocorre após geração de ticket."]},
@@ -525,7 +431,7 @@ function renderCards(){
   lbl.textContent=`${f.length} processo${f.length!==1?'s':''} encontrado${f.length!==1?'s':''}`;
   if(!f.length){c.innerHTML=`<div class="empty"><div class="empty-icon">🔍</div>Nenhum processo encontrado.</div>`;return}
   c.innerHTML=f.map(p=>`
-    <div class="card" id="card-${p._id}" onclick="toggleCard('${p._id}')">
+    <div class="card" id="card-${p.id}" onclick="toggleCard(${p.id})">
       <div class="card-header"><div class="card-title">${p.titulo}</div>
         <div class="card-chevron"><svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></div>
       </div>
@@ -539,11 +445,10 @@ function renderCards(){
         <div class="card-desc">${p.descricao}</div>
         <div class="steps-title">Passo a passo</div>
         <div class="steps">${p.passos.map((s,i)=>`<div class="step"><div class="step-num">${i+1}</div><div class="step-text">${s}</div></div>`).join('')}</div>
-        <div class="admin-row"><button class="admin-btn" onclick="event.stopPropagation();openProcessoForm('${p._id}')">✏️ Editar</button><button class="admin-btn del" onclick="event.stopPropagation();removeItem('processos','${p._id}','${escAttr(p.titulo)}')">🗑️ Excluir</button></div>
       </div>
     </div>`).join('');
 }
-function toggleCard(id){const el=document.getElementById(`card-${id}`);if(el)el.classList.toggle('open')}
+function toggleCard(id){document.getElementById(`card-${id}`).classList.toggle('open')}
 document.getElementById('filters').addEventListener('click',e=>{
   const btn=e.target.closest('.filter-btn');if(!btn)return;
   document.querySelectorAll('#filters .filter-btn').forEach(b=>b.classList.remove('active'));
@@ -556,7 +461,7 @@ document.getElementById('badge-processos').textContent=processos.length;
 renderCards();
 
 // ══════════ UNIDADES ══════════
-const SEED_unidades=[
+const unidades=[
   {nome:"TABOÃO",end:"R. Raphael de Marco, 285 - Taboão da Serra - SP",lat:-23.617,lon:-46.775},
   {nome:"ALDEOTA",end:"Av. Santos Dumont, 3155 - Fortaleza - CE",lat:-3.737,lon:-38.502},
   {nome:"SÃO MIGUEL",end:"Av. São Miguel, 6813 - São Paulo - SP",lat:-23.519,lon:-46.454},
@@ -648,12 +553,12 @@ const SEED_unidades=[
   {nome:"VILA AUGUSTA",end:"Av. Guarulhos, 1335 - Guarulhos - SP",lat:-23.456,lon:-46.536}
 ];
 
-const SEED_dadosUnidades={"TABOÃO":{"hours":"24H","phone":"11 93489-9212","parking":"2 estacionamentos: coberto (15 vagas) e descoberto (10 vagas)","services":["Aula experimental","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"ALDEOTA":{"hours":"24H","phone":"85 3017-5829","parking":"Incluso na mensalidade","services":["Fisioterapia","Pilates","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Silver+ / TP3","model":"Própria"},"SÃO MIGUEL":{"hours":"24H","phone":"(11) 3938-1371","parking":"Grátis Seg-Sex 5h–23h45 / Sab-Dom-Fer 5h–19h45","services":["Bioimpedância","Aula experimental","Sala VIP","Plano Kids"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"MONDUBIM":{"hours":"24H","phone":"85 9 9631-9295","parking":"Gratuito","services":["Sala VIP","Valet"],"pcd":true,"plans":"TP1+ / Basic+","model":"Própria"},"PENHA":{"hours":"24H","phone":"11 2958-8169","parking":"Grátis 2h, após R$3","services":["Bioimpedância","Fisioterapia","Pilates","Aula experimental","Sala VIP","Plano Kids"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Própria"},"PIMENTAS":{"hours":"24H","phone":"11 96242-9784","parking":"Gratuito","services":["Bioimpedância","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"POA":{"hours":"24H","phone":"11 94019-7568","parking":"Sim","services":["Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"MOOCA":{"hours":"Seg-Sex 5h–0h / Sab-Dom-Fer 7h–22h","phone":"(11) 2215-5404","parking":"2h grátis, após R$30","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"CASTELÃO":{"hours":"24H","phone":"(85) 3400-0130","parking":"120 vagas no pátio","services":["Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"PALMAS":{"hours":"24H","phone":"63 98121-3505","parking":"Próprio, horário livre","services":["Bioimpedância","Pilates","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"SANTO ANDRÉ":{"hours":"24H","phone":"11 99132-5597","parking":"Gratuito – Travessa do Jardim","services":["Sala VIP","Valet"],"pcd":true,"plans":"TP2 / Basic+","model":"Própria"},"TAQUARALTO":{"hours":"24H","phone":"(63) 9122-9392","parking":"Sim – 24H","services":["Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"ITAIM I":{"hours":"Seg-Sex 5h–1h / Sab-Dom-Fer 7h–22h","phone":"4233-1283","parking":"Grátis (horário do supermercado Sonda)","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP","Plano Kids","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"AMERICANA":{"hours":"24H","phone":"19 99645-0289","parking":"24H gratuito","services":["Pilates","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"ALPHAVILLE":{"hours":"24H","phone":"11 92046-2138","parking":"Sim (máx 2h)","services":["Bioimpedância","Pilates","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Silver+ / Totalpass TP3","model":"Própria"},"PINHEIROS":{"hours":"24H","phone":"(11) 94540-8190","parking":"5 vagas – R$15/2h","services":["Bioimpedância","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Silver+ / Totalpass TP4","model":"Franquia"},"VARGEM GRANDE":{"hours":"24H","phone":"(11) 3500-6061","parking":"2h grátis no Shopping Ecomall","services":["Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"ARUJÁ":{"hours":"24h (fds auxiliares 6h–21h)","phone":"+55 11 99980-0169","parking":"24h (fds auxiliares 6h–21h)","services":["Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Em breve","model":"Franquia"},"ITAPEVI":{"hours":"24H","phone":"(11) 94806-6667","parking":"30 vagas – 24H","services":["Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"MOGI GUAÇU":{"hours":"24H","phone":"(19) 98706-7290","parking":"Sim","services":["Aula experimental","Valet"],"pcd":true,"plans":"TP1+ / Basic+","model":"Própria"},"RIO BRANCO":{"hours":"24H","phone":"11 92222-4520","parking":"2h grátis, após R$5","services":["Bioimpedância","Nutricionista","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"TP2 / Basic+","model":"Franquia"},"SÃO VICENTE":{"hours":"24H","phone":"13 99130-9731","parking":"Estacionamento na rua","services":["Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"SAÚDE":{"hours":"24H","phone":"(11) 5589-3330","parking":"Grátis 24H","services":["Bioimpedância","Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic / Totalpass TP3","model":"Própria"},"AEROPORTO":{"hours":"24H","phone":"(11) 5034-5188","parking":"Grátis 24H","services":["Bioimpedância","Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Própria"},"GUARUJÁ":{"hours":"24H","phone":"13 99144-9393","parking":"5 vagas laterais","services":["Sala VIP"],"pcd":true,"plans":"TP2 / Basic+","model":"Própria"},"ITAPETININGA":{"hours":"24H","phone":"15 99173-7768","parking":"Sim","services":["Aula experimental","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"RIBEIRÃO":{"hours":"24H","phone":"16 99633-8005","parking":"Grátis 24H","services":["Bioimpedância","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"PERDIZES":{"hours":"24H","phone":"(11) 3803-9068","parking":"R$5/h aluno (Seg-Sex 7h–22h)","services":["Bioimpedância","Aula experimental"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP3","model":"Própria"},"JABAQUARA":{"hours":"24H","phone":"11 96186-4736","parking":"Cortesia","services":["Aula experimental","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"TP2 / Basic+","model":"Própria"},"ATIBAIA":{"hours":"24H","phone":"(11) 99372-6431","parking":"Grátis 3h, após R$15","services":["Bioimpedância","Nutricionista","Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"PRAIA GRANDE":{"hours":"24H","phone":"13 97809-6288","parking":"Gratuito","services":["Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"TAUBATÉ":{"hours":"24H","phone":"12 99184-4581","parking":"Próprio – gratuito","services":["Aula experimental","Sala VIP","Bicicletário"],"pcd":false,"plans":"TP1+ / Basic+","model":"Franquia"},"VILA MARIA":{"hours":"24H","phone":"(11) 96665-9439","parking":"Gratuito, 6h–22h","services":["Pilates","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Franquia"},"RIO DAS PEDRAS":{"hours":"24H","phone":"11 96373-0438","parking":"Gratuito (todos os dias 6h–0h)","services":["Aula experimental","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"SOROCABA":{"hours":"24H – segunda a segunda","phone":"11 99423-2496","parking":"—","services":["Bioimpedância","Bicicletário","Valet"],"pcd":false,"plans":"TP2 / Basic+","model":"Franquia"},"TAIPAS":{"hours":"Seg 5h → Sab 19h / Dom 6h–19h","phone":"(11) 9 3040-8272","parking":"Seg-Sex 6h–22h / Sab 8h–17h","services":["Aula experimental","Plano Kids","Valet"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"ARICANDUVA":{"hours":"24H","phone":"(11) 91421-2347","parking":"Grátis 24H","services":["Aula experimental","Bicicletário","Valet"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"JARAGUÁ":{"hours":"24H","phone":"(11) 91529-0224","parking":"40 vagas – 24H","services":["Pilates","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1","model":"Franquia"},"IPIRANGA":{"hours":"24H","phone":"(11) 99870-7610","parking":"Grátis 24H","services":["Nutricionista","Pilates","Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"CARRÃO":{"hours":"Seg 5h → Sex 0h / Fer 8h–18h / Dom 8h–16h","phone":"11 95815-4467","parking":"Gratuito","services":[],"pcd":true,"plans":"TP1+ / Basic+","model":"Franquia"},"PONTE ESTAIADA":{"hours":"24H","phone":"11 98037-7199","parking":"2h30 grátis, após R$10","services":["Bioimpedância","Pilates","Sala VIP","Valet"],"pcd":true,"plans":"TP3 / Silver+","model":"Franquia"},"CUIABÁ":{"hours":"24H","phone":"(65) 99915-1849","parking":"Gratuito","services":["Sala VIP"],"pcd":true,"plans":"TP2 / Basic+","model":"Própria"},"VILA MADALENA":{"hours":"24H","phone":"(11) 3815-5757","parking":"6h–22h grátis 2h, R$10/h adicional","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Própria"},"ARAGUAÍNA":{"hours":"24H","phone":"63 9120-9470","parking":"Sim","services":["Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"CONSOLAÇÃO":{"hours":"24H","phone":"11 94460-3995","parking":"Sim","services":["Bioimpedância","Bicicletário","Valet"],"pcd":true,"plans":"Silver (pico) / TP3","model":"Franquia"},"METRÔ SAPOPEMBA":{"hours":"24H","phone":"11 92215-1021","parking":"Gratuito para alunos","services":["Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"TP1+ / Basic+","model":"Franquia"},"PATTEO KLABIN":{"hours":"5h–0h / Fds e Fer 8h–16h","phone":"11 98948-0039","parking":"Cortesia 2h (mall)","services":[],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"ARACATI":{"hours":"24H","phone":"88 92162-8199","parking":"103 vagas (carros e motos)","services":["Pilates","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"FEIRA DE SANTANA":{"hours":"24H","phone":"75 3024-5629","parking":"Estacionamento do shopping","services":["Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Basic+ / TP2","model":"Própria"},"VILA MATILDE":{"hours":"24H","phone":"11 93929-3929","parking":"Gratuito","services":["Aula experimental"],"pcd":true,"plans":"TP2 / Basic+","model":"Franquia"},"VILA LEOPOLDINA":{"hours":"24H","phone":"11 96759-4237","parking":"8 vagas grátis c/ manobrista + conveniado 25 vagas","services":["Bioimpedância","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Franquia"},"SHOPPING TRIMAIS":{"hours":"Seg-Sex 5h45–0h / Fds 7h–19h","phone":"(11) 3164-9155","parking":"3h grátis, após tarifa do shopping","services":["Bioimpedância","Fisioterapia","Nutricionista","Pilates","Aula experimental","Sala VIP","Plano Kids","Bicicletário"],"pcd":true,"plans":"Gympass Basic / Totalpass TP3","model":"Própria"},"PAULISTA":{"hours":"24H","phone":"(11) 3285-3269","parking":"R$5 1ª hora / R$1 demais – Rua dos Ingleses 297","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic / Totalpass TP2","model":"Própria"},"TREMEMBÉ":{"hours":"24H","phone":"(11) 2263-2207","parking":"Grátis frente e subsolo – 24H","services":["Bioimpedância","Fisioterapia","Aula experimental","Sala VIP","Plano Kids","Bicicletário"],"pcd":false,"plans":"Gympass Basic / Totalpass TP2","model":"Própria"},"VILA GALVÃO":{"hours":"24H","phone":"(11) 2452-8635","parking":"Grátis 24H","services":["Bioimpedância","Fisioterapia","Nutricionista","Aula experimental","Sala VIP","Plano Kids","Bicicletário","Valet"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"VILA GUSTAVO":{"hours":"Seg-Sab 5h–18h / Dom 8h–18h","phone":"(11) 91231-4596","parking":"Grátis (mesmo horário)","services":["Bioimpedância","Pilates","Aula experimental","Plano Kids","Bicicletário"],"pcd":false,"plans":"Gympass Basic / Totalpass TP1+","model":"Própria"},"MARGINAL":{"hours":"24H","phone":"11 98146-5521","parking":"50 vagas carros + 33 motos (manobrista)","services":["Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"TP3 / Basic+","model":"Própria"},"LIMÃO":{"hours":"24H","phone":"(11) 99222-1696","parking":"Grátis portão principal 24H","services":["Bioimpedância","Nutricionista","Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"PARAPUÃ":{"hours":"24H","phone":"11 99219-3608","parking":"Grátis 5h–22h","services":["Bioimpedância","Aula experimental"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"ALTO DE SANTANA":{"hours":"24H","phone":"(11) 2239-7139","parking":"Avulso R$5 carro / R$1 moto | Mensal R$50 carro","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Própria"},"BARREIRA GRANDE":{"hours":"Seg-Sex 24H / Sab-Fer 8h–18h / Dom 8h–16h","phone":"11 93222-7986","parking":"Sim","services":[],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"BAURU":{"hours":"24H","phone":"14 99194-2353","parking":"Sim","services":["Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"CACHOEIRINHA":{"hours":"24H","phone":"(11) 96641-1928","parking":"Grátis 6h–23h todos os dias","services":["Bioimpedância","Aula experimental","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"CAMPINAS":{"hours":"24H","phone":"(19) 99400-0198","parking":"Grátis 24H","services":["Fisioterapia","Nutricionista","Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Silver / Totalpass TP3","model":"Franquia"},"CANGAÍBA":{"hours":"24H","phone":"11 82184-7912","parking":"Sim","services":["Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / TP3","model":"Franquia"},"CARAPICUÍBA":{"hours":"24H","phone":"11 96321-7961","parking":"1h30 grátis, após R$4/h","services":["Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"CELSO GARCIA":{"hours":"24H","phone":"11 91191-8569","parking":"Grátis 24H (ao lado)","services":[],"pcd":false,"plans":"TP1+ / Basic+","model":"Própria"},"CUMBICA":{"hours":"24H","phone":"+55 11 94074-7584","parking":"—","services":[],"pcd":false,"plans":"Basic+ / TP1+","model":"Própria"},"DIADEMA":{"hours":"24H","phone":"(11) 94115-1264","parking":"Grátis 24H","services":["Nutricionista","Aula experimental","Bicicletário"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP3","model":"Franquia"},"FAST TREINO":{"hours":"24H","phone":"11 98877-1847","parking":"—","services":[],"pcd":false,"plans":"—","model":"Própria"},"FERRAZÓPOLIS":{"hours":"24H","phone":"11 97774-2396","parking":"Sim","services":["Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / TP1+","model":"Franquia"},"FORTALEZA I":{"hours":"24H","phone":"(85) 3077-0041","parking":"Grátis 24H","services":["Bioimpedância","Pilates","Sala VIP","Plano Kids","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"FORTALEZA II":{"hours":"24H","phone":"85 3037-9746","parking":"Grátis 24H","services":["Bioimpedância","Fisioterapia","Pilates","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"HORTO":{"hours":"24H","phone":"(11) 2259-8105","parking":"Grátis 5h30–1h","services":["Bioimpedância","Aula experimental","Sala VIP","Plano Kids","Bicicletário"],"pcd":true,"plans":"TP1+ / Basic+","model":"Própria"},"ITAIM II":{"hours":"24H","phone":"(11) 2571-4341","parking":"30 vagas grátis 6h–0h","services":["Bioimpedância","Fisioterapia","Pilates","Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"ITAQUAQUECETUBA":{"hours":"24H","phone":"11 95456-2632","parking":"Sim","services":["Pilates","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"JOÃO PESSOA":{"hours":"24H","phone":"(83) 9170-8863","parking":"Sim","services":["Fisioterapia","Nutricionista","Pilates","Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"JOINVILLE":{"hours":"24H","phone":"(47) 9 9635-6955","parking":"Grátis ao redor 24H + Estac. JK até 0h","services":["Bioimpedância","Fisioterapia","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"LAJEADO":{"hours":"Seg-Sex 24H / Sab até 20h / Dom 6h–20h","phone":"(11) 98482-4994","parking":"Grátis Seg-Sex 6h–0h / Sab 6h–20h","services":["Aula experimental"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"LENÇÓIS PAULISTA":{"hours":"24H","phone":"14 99122-9100","parking":"Gratuito","services":["Sala VIP"],"pcd":true,"plans":"TP1+ / Basic+","model":"Própria"},"OCEANIA":{"hours":"—","phone":"—","parking":"—","services":[],"pcd":false,"plans":"Silver / TP3","model":"Própria"},"PIRITUBA":{"hours":"24H","phone":"(11) 91298-2868","parking":"Conveniado R$2/2h – 24H","services":["Bioimpedância","Nutricionista","Pilates","Plano Kids"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP3","model":"Franquia"},"RECIFE":{"hours":"24H","phone":"81 95568-804","parking":"40 vagas carros + 20 motos","services":[],"pcd":true,"plans":"TP2 / Basic+","model":"Própria"},"SBC":{"hours":"Seg-Sex 24H / Sab 8h–18h / Dom 8h–14h","phone":"11 91605-9118","parking":"Grátis até 2h, após R$10","services":["Nutricionista","Aula experimental","Plano Kids","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Franquia"},"SÃO MATEUS":{"hours":"24H","phone":"11 94729-0446","parking":"Vagas limitadas – Rua Paulo de Queiroz 1056","services":["Bicicletário","Valet"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"SAPOPEMBA":{"hours":"24H","phone":"11 3624-3068","parking":"Grátis 24H","services":["Sala VIP","Plano Kids","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"SIQUEIRA BUENO":{"hours":"24H","phone":"11 94026-6214","parking":"27 vagas – 24H","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"TABOÃO 2":{"hours":"24H","phone":"(11) 92139-2892","parking":"Gratuito","services":["Aula experimental","Sala VIP"],"pcd":true,"plans":"Basic+ / TP2","model":"Franquia"},"VILA AUGUSTA":{"hours":"24H","phone":"—","parking":"—","services":["Sala VIP"],"pcd":true,"plans":"Totalpass TP2 / Gympass Basic+","model":"Própria"}};
+const dadosUnidades={"TABOÃO":{"hours":"24H","phone":"11 93489-9212","parking":"2 estacionamentos: coberto (15 vagas) e descoberto (10 vagas)","services":["Aula experimental","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"ALDEOTA":{"hours":"24H","phone":"85 3017-5829","parking":"Incluso na mensalidade","services":["Fisioterapia","Pilates","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Silver+ / TP3","model":"Própria"},"SÃO MIGUEL":{"hours":"24H","phone":"(11) 3938-1371","parking":"Grátis Seg-Sex 5h–23h45 / Sab-Dom-Fer 5h–19h45","services":["Bioimpedância","Aula experimental","Sala VIP","Plano Kids"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"MONDUBIM":{"hours":"24H","phone":"85 9 9631-9295","parking":"Gratuito","services":["Sala VIP","Valet"],"pcd":true,"plans":"TP1+ / Basic+","model":"Própria"},"PENHA":{"hours":"24H","phone":"11 2958-8169","parking":"Grátis 2h, após R$3","services":["Bioimpedância","Fisioterapia","Pilates","Aula experimental","Sala VIP","Plano Kids"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Própria"},"PIMENTAS":{"hours":"24H","phone":"11 96242-9784","parking":"Gratuito","services":["Bioimpedância","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"POA":{"hours":"24H","phone":"11 94019-7568","parking":"Sim","services":["Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"MOOCA":{"hours":"Seg-Sex 5h–0h / Sab-Dom-Fer 7h–22h","phone":"(11) 2215-5404","parking":"2h grátis, após R$30","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"CASTELÃO":{"hours":"24H","phone":"(85) 3400-0130","parking":"120 vagas no pátio","services":["Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"PALMAS":{"hours":"24H","phone":"63 98121-3505","parking":"Próprio, horário livre","services":["Bioimpedância","Pilates","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"SANTO ANDRÉ":{"hours":"24H","phone":"11 99132-5597","parking":"Gratuito – Travessa do Jardim","services":["Sala VIP","Valet"],"pcd":true,"plans":"TP2 / Basic+","model":"Própria"},"TAQUARALTO":{"hours":"24H","phone":"(63) 9122-9392","parking":"Sim – 24H","services":["Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"ITAIM I":{"hours":"Seg-Sex 5h–1h / Sab-Dom-Fer 7h–22h","phone":"4233-1283","parking":"Grátis (horário do supermercado Sonda)","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP","Plano Kids","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"AMERICANA":{"hours":"24H","phone":"19 99645-0289","parking":"24H gratuito","services":["Pilates","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"ALPHAVILLE":{"hours":"24H","phone":"11 92046-2138","parking":"Sim (máx 2h)","services":["Bioimpedância","Pilates","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Silver+ / Totalpass TP3","model":"Própria"},"PINHEIROS":{"hours":"24H","phone":"(11) 94540-8190","parking":"5 vagas – R$15/2h","services":["Bioimpedância","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Silver+ / Totalpass TP4","model":"Franquia"},"VARGEM GRANDE":{"hours":"24H","phone":"(11) 3500-6061","parking":"2h grátis no Shopping Ecomall","services":["Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"ARUJÁ":{"hours":"24h (fds auxiliares 6h–21h)","phone":"+55 11 99980-0169","parking":"24h (fds auxiliares 6h–21h)","services":["Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Em breve","model":"Franquia"},"ITAPEVI":{"hours":"24H","phone":"(11) 94806-6667","parking":"30 vagas – 24H","services":["Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"MOGI GUAÇU":{"hours":"24H","phone":"(19) 98706-7290","parking":"Sim","services":["Aula experimental","Valet"],"pcd":true,"plans":"TP1+ / Basic+","model":"Própria"},"RIO BRANCO":{"hours":"24H","phone":"11 92222-4520","parking":"2h grátis, após R$5","services":["Bioimpedância","Nutricionista","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"TP2 / Basic+","model":"Franquia"},"SÃO VICENTE":{"hours":"24H","phone":"13 99130-9731","parking":"Estacionamento na rua","services":["Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"SAÚDE":{"hours":"24H","phone":"(11) 5589-3330","parking":"Grátis 24H","services":["Bioimpedância","Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic / Totalpass TP3","model":"Própria"},"AEROPORTO":{"hours":"24H","phone":"(11) 5034-5188","parking":"Grátis 24H","services":["Bioimpedância","Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Própria"},"GUARUJÁ":{"hours":"24H","phone":"13 99144-9393","parking":"5 vagas laterais","services":["Sala VIP"],"pcd":true,"plans":"TP2 / Basic+","model":"Própria"},"ITAPETININGA":{"hours":"24H","phone":"15 99173-7768","parking":"Sim","services":["Aula experimental","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"RIBEIRÃO":{"hours":"24H","phone":"16 99633-8005","parking":"Grátis 24H","services":["Bioimpedância","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"PERDIZES":{"hours":"24H","phone":"(11) 3803-9068","parking":"R$5/h aluno (Seg-Sex 7h–22h)","services":["Bioimpedância","Aula experimental"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP3","model":"Própria"},"JABAQUARA":{"hours":"24H","phone":"11 96186-4736","parking":"Cortesia","services":["Aula experimental","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"TP2 / Basic+","model":"Própria"},"ATIBAIA":{"hours":"24H","phone":"(11) 99372-6431","parking":"Grátis 3h, após R$15","services":["Bioimpedância","Nutricionista","Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"PRAIA GRANDE":{"hours":"24H","phone":"13 97809-6288","parking":"Gratuito","services":["Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"TAUBATÉ":{"hours":"24H","phone":"12 99184-4581","parking":"Próprio – gratuito","services":["Aula experimental","Sala VIP","Bicicletário"],"pcd":false,"plans":"TP1+ / Basic+","model":"Franquia"},"VILA MARIA":{"hours":"24H","phone":"(11) 96665-9439","parking":"Gratuito, 6h–22h","services":["Pilates","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Franquia"},"RIO DAS PEDRAS":{"hours":"24H","phone":"11 96373-0438","parking":"Gratuito (todos os dias 6h–0h)","services":["Aula experimental","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"SOROCABA":{"hours":"24H – segunda a segunda","phone":"11 99423-2496","parking":"—","services":["Bioimpedância","Bicicletário","Valet"],"pcd":false,"plans":"TP2 / Basic+","model":"Franquia"},"TAIPAS":{"hours":"Seg 5h → Sab 19h / Dom 6h–19h","phone":"(11) 9 3040-8272","parking":"Seg-Sex 6h–22h / Sab 8h–17h","services":["Aula experimental","Plano Kids","Valet"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"ARICANDUVA":{"hours":"24H","phone":"(11) 91421-2347","parking":"Grátis 24H","services":["Aula experimental","Bicicletário","Valet"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"JARAGUÁ":{"hours":"24H","phone":"(11) 91529-0224","parking":"40 vagas – 24H","services":["Pilates","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1","model":"Franquia"},"IPIRANGA":{"hours":"24H","phone":"(11) 99870-7610","parking":"Grátis 24H","services":["Nutricionista","Pilates","Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"CARRÃO":{"hours":"Seg 5h → Sex 0h / Fer 8h–18h / Dom 8h–16h","phone":"11 95815-4467","parking":"Gratuito","services":[],"pcd":true,"plans":"TP1+ / Basic+","model":"Franquia"},"PONTE ESTAIADA":{"hours":"24H","phone":"11 98037-7199","parking":"2h30 grátis, após R$10","services":["Bioimpedância","Pilates","Sala VIP","Valet"],"pcd":true,"plans":"TP3 / Silver+","model":"Franquia"},"CUIABÁ":{"hours":"24H","phone":"(65) 99915-1849","parking":"Gratuito","services":["Sala VIP"],"pcd":true,"plans":"TP2 / Basic+","model":"Própria"},"VILA MADALENA":{"hours":"24H","phone":"(11) 3815-5757","parking":"6h–22h grátis 2h, R$10/h adicional","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Própria"},"ARAGUAÍNA":{"hours":"24H","phone":"63 9120-9470","parking":"Sim","services":["Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"CONSOLAÇÃO":{"hours":"24H","phone":"11 94460-3995","parking":"Sim","services":["Bioimpedância","Bicicletário","Valet"],"pcd":true,"plans":"Silver (pico) / TP3","model":"Franquia"},"METRÔ SAPOPEMBA":{"hours":"24H","phone":"11 92215-1021","parking":"Gratuito para alunos","services":["Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"TP1+ / Basic+","model":"Franquia"},"PATTEO KLABIN":{"hours":"5h–0h / Fds e Fer 8h–16h","phone":"11 98948-0039","parking":"Cortesia 2h (mall)","services":[],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"ARACATI":{"hours":"24H","phone":"88 92162-8199","parking":"103 vagas (carros e motos)","services":["Pilates","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"FEIRA DE SANTANA":{"hours":"24H","phone":"75 3024-5629","parking":"Estacionamento do shopping","services":["Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Basic+ / TP2","model":"Própria"},"VILA MATILDE":{"hours":"24H","phone":"11 93929-3929","parking":"Gratuito","services":["Aula experimental"],"pcd":true,"plans":"TP2 / Basic+","model":"Franquia"},"VILA LEOPOLDINA":{"hours":"24H","phone":"11 96759-4237","parking":"8 vagas grátis c/ manobrista + conveniado 25 vagas","services":["Bioimpedância","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Franquia"},"SHOPPING TRIMAIS":{"hours":"Seg-Sex 5h45–0h / Fds 7h–19h","phone":"(11) 3164-9155","parking":"3h grátis, após tarifa do shopping","services":["Bioimpedância","Fisioterapia","Nutricionista","Pilates","Aula experimental","Sala VIP","Plano Kids","Bicicletário"],"pcd":true,"plans":"Gympass Basic / Totalpass TP3","model":"Própria"},"PAULISTA":{"hours":"24H","phone":"(11) 3285-3269","parking":"R$5 1ª hora / R$1 demais – Rua dos Ingleses 297","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic / Totalpass TP2","model":"Própria"},"TREMEMBÉ":{"hours":"24H","phone":"(11) 2263-2207","parking":"Grátis frente e subsolo – 24H","services":["Bioimpedância","Fisioterapia","Aula experimental","Sala VIP","Plano Kids","Bicicletário"],"pcd":false,"plans":"Gympass Basic / Totalpass TP2","model":"Própria"},"VILA GALVÃO":{"hours":"24H","phone":"(11) 2452-8635","parking":"Grátis 24H","services":["Bioimpedância","Fisioterapia","Nutricionista","Aula experimental","Sala VIP","Plano Kids","Bicicletário","Valet"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"VILA GUSTAVO":{"hours":"Seg-Sab 5h–18h / Dom 8h–18h","phone":"(11) 91231-4596","parking":"Grátis (mesmo horário)","services":["Bioimpedância","Pilates","Aula experimental","Plano Kids","Bicicletário"],"pcd":false,"plans":"Gympass Basic / Totalpass TP1+","model":"Própria"},"MARGINAL":{"hours":"24H","phone":"11 98146-5521","parking":"50 vagas carros + 33 motos (manobrista)","services":["Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"TP3 / Basic+","model":"Própria"},"LIMÃO":{"hours":"24H","phone":"(11) 99222-1696","parking":"Grátis portão principal 24H","services":["Bioimpedância","Nutricionista","Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"PARAPUÃ":{"hours":"24H","phone":"11 99219-3608","parking":"Grátis 5h–22h","services":["Bioimpedância","Aula experimental"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"ALTO DE SANTANA":{"hours":"24H","phone":"(11) 2239-7139","parking":"Avulso R$5 carro / R$1 moto | Mensal R$50 carro","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Própria"},"BARREIRA GRANDE":{"hours":"Seg-Sex 24H / Sab-Fer 8h–18h / Dom 8h–16h","phone":"11 93222-7986","parking":"Sim","services":[],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"BAURU":{"hours":"24H","phone":"14 99194-2353","parking":"Sim","services":["Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"CACHOEIRINHA":{"hours":"24H","phone":"(11) 96641-1928","parking":"Grátis 6h–23h todos os dias","services":["Bioimpedância","Aula experimental","Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"CAMPINAS":{"hours":"24H","phone":"(19) 99400-0198","parking":"Grátis 24H","services":["Fisioterapia","Nutricionista","Pilates","Aula experimental","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Silver / Totalpass TP3","model":"Franquia"},"CANGAÍBA":{"hours":"24H","phone":"11 82184-7912","parking":"Sim","services":["Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / TP3","model":"Franquia"},"CARAPICUÍBA":{"hours":"24H","phone":"11 96321-7961","parking":"1h30 grátis, após R$4/h","services":["Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"CELSO GARCIA":{"hours":"24H","phone":"11 91191-8569","parking":"Grátis 24H (ao lado)","services":[],"pcd":false,"plans":"TP1+ / Basic+","model":"Própria"},"CUMBICA":{"hours":"24H","phone":"+55 11 94074-7584","parking":"—","services":[],"pcd":false,"plans":"Basic+ / TP1+","model":"Própria"},"DIADEMA":{"hours":"24H","phone":"(11) 94115-1264","parking":"Grátis 24H","services":["Nutricionista","Aula experimental","Bicicletário"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP3","model":"Franquia"},"FAST TREINO":{"hours":"24H","phone":"11 98877-1847","parking":"—","services":[],"pcd":false,"plans":"—","model":"Própria"},"FERRAZÓPOLIS":{"hours":"24H","phone":"11 97774-2396","parking":"Sim","services":["Sala VIP","Bicicletário","Valet"],"pcd":true,"plans":"Gympass Basic+ / TP1+","model":"Franquia"},"FORTALEZA I":{"hours":"24H","phone":"(85) 3077-0041","parking":"Grátis 24H","services":["Bioimpedância","Pilates","Sala VIP","Plano Kids","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"FORTALEZA II":{"hours":"24H","phone":"85 3037-9746","parking":"Grátis 24H","services":["Bioimpedância","Fisioterapia","Pilates","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"HORTO":{"hours":"24H","phone":"(11) 2259-8105","parking":"Grátis 5h30–1h","services":["Bioimpedância","Aula experimental","Sala VIP","Plano Kids","Bicicletário"],"pcd":true,"plans":"TP1+ / Basic+","model":"Própria"},"ITAIM II":{"hours":"24H","phone":"(11) 2571-4341","parking":"30 vagas grátis 6h–0h","services":["Bioimpedância","Fisioterapia","Pilates","Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"ITAQUAQUECETUBA":{"hours":"24H","phone":"11 95456-2632","parking":"Sim","services":["Pilates","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Própria"},"JOÃO PESSOA":{"hours":"24H","phone":"(83) 9170-8863","parking":"Sim","services":["Fisioterapia","Nutricionista","Pilates","Aula experimental","Sala VIP"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"JOINVILLE":{"hours":"24H","phone":"(47) 9 9635-6955","parking":"Grátis ao redor 24H + Estac. JK até 0h","services":["Bioimpedância","Fisioterapia","Sala VIP","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Própria"},"LAJEADO":{"hours":"Seg-Sex 24H / Sab até 20h / Dom 6h–20h","phone":"(11) 98482-4994","parking":"Grátis Seg-Sex 6h–0h / Sab 6h–20h","services":["Aula experimental"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"LENÇÓIS PAULISTA":{"hours":"24H","phone":"14 99122-9100","parking":"Gratuito","services":["Sala VIP"],"pcd":true,"plans":"TP1+ / Basic+","model":"Própria"},"OCEANIA":{"hours":"—","phone":"—","parking":"—","services":[],"pcd":false,"plans":"Silver / TP3","model":"Própria"},"PIRITUBA":{"hours":"24H","phone":"(11) 91298-2868","parking":"Conveniado R$2/2h – 24H","services":["Bioimpedância","Nutricionista","Pilates","Plano Kids"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP3","model":"Franquia"},"RECIFE":{"hours":"24H","phone":"81 95568-804","parking":"40 vagas carros + 20 motos","services":[],"pcd":true,"plans":"TP2 / Basic+","model":"Própria"},"SBC":{"hours":"Seg-Sex 24H / Sab 8h–18h / Dom 8h–14h","phone":"11 91605-9118","parking":"Grátis até 2h, após R$10","services":["Nutricionista","Aula experimental","Plano Kids","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP3","model":"Franquia"},"SÃO MATEUS":{"hours":"24H","phone":"11 94729-0446","parking":"Vagas limitadas – Rua Paulo de Queiroz 1056","services":["Bicicletário","Valet"],"pcd":false,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"SAPOPEMBA":{"hours":"24H","phone":"11 3624-3068","parking":"Grátis 24H","services":["Sala VIP","Plano Kids","Bicicletário"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP2","model":"Franquia"},"SIQUEIRA BUENO":{"hours":"24H","phone":"11 94026-6214","parking":"27 vagas – 24H","services":["Bioimpedância","Pilates","Aula experimental","Sala VIP","Valet"],"pcd":true,"plans":"Gympass Basic+ / Totalpass TP1+","model":"Franquia"},"TABOÃO 2":{"hours":"24H","phone":"(11) 92139-2892","parking":"Gratuito","services":["Aula experimental","Sala VIP"],"pcd":true,"plans":"Basic+ / TP2","model":"Franquia"},"VILA AUGUSTA":{"hours":"24H","phone":"—","parking":"—","services":["Sala VIP"],"pcd":true,"plans":"Totalpass TP2 / Gympass Basic+","model":"Própria"}};
 
 const SVC_ICONS={"Bioimpedância":"⚖️","Fisioterapia":"🏥","Nutricionista":"🥗","Pilates":"🧘","Aula experimental":"🎯","Sala VIP":"⭐","Plano Kids":"👶","Bicicletário":"🚲","Valet":"🚗"};
 
 const B='https://www.academiagavioes.com.br/templates/yootheme/cache/';
-const SEED_unitThumbs={
+const unitThumbs={
   "AEROPORTO":B+"bd/2-bd874273.webp","ALDEOTA":B+"47/1-47586ffc.webp",
   "ALTO DE SANTANA":B+"20/1-20065ced.webp","AMERICANA":B+"5c/01-5cd16f17.webp",
   "ALPHAVILLE":B+"de/5-deb54c21.webp","ARACATI":B+"c8/AG-ARA_RENDERS_R01_31_-_Foto-c8c9255e.webp",
@@ -731,7 +636,6 @@ function renderUnits(q){
         ${d.plans&&d.plans!=='—'?`<div class="unit-detail-row"><span class="unit-detail-icon">💳</span>${d.plans}</div>`:''}
         ${chips?`<div class="unit-chips">${chips}</div>`:''}
         ${d.pcd?`<span class="unit-pcd">♿ Acessível PCD</span>`:''}
-        <div class="admin-row"><button class="admin-btn" onclick="event.stopPropagation();openUnidadeForm('${u._id}')">✏️ Editar</button><button class="admin-btn del" onclick="event.stopPropagation();removeItem('unidades','${u._id}','${escAttr(u.nome)}')">🗑️ Excluir</button></div>
       </div>
     </div>`}).join('');
 }
@@ -797,14 +701,8 @@ function buildTooltip(nome,end,d){
 function initMap(){
   mapInstance=L.map('map').setView([-15.5,-47.5],4);
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{attribution:'© OpenStreetMap © CARTO',subdomains:'abcd',maxZoom:19}).addTo(mapInstance);
-  addUnitMarkers();
-}
-function addUnitMarkers(){
-  if(!mapInstance)return;
-  Object.keys(markerMap).forEach(k=>{mapInstance.removeLayer(markerMap[k]);delete markerMap[k];});
   const icon=L.divIcon({className:'',html:`<div style="width:32px;height:32px;border-radius:6px;overflow:hidden;box-shadow:0 2px 10px rgba(229,62,62,.5)"><img src="${LOGO}" style="width:32px;height:32px;object-fit:cover" onerror="this.parentElement.style.background='#111';this.parentElement.innerHTML='🦅'"></div>`,iconSize:[32,32],iconAnchor:[16,16],popupAnchor:[0,-20]});
   unidades.forEach(u=>{
-    if(typeof u.lat!=='number'||typeof u.lon!=='number')return;
     const m=L.marker([u.lat,u.lon],{icon}).addTo(mapInstance)
       .bindTooltip(buildTooltip(u.nome,u.end,getDados(u.nome)),{className:'gavioes-tip',direction:'top',offset:[0,-10],opacity:1});
     markerMap[normName(u.nome)]=m;
@@ -834,7 +732,7 @@ function _doFly(nome,lat,lon){
 }
 
 // ══════════ PROJETOS ══════════
-const SEED_projetos=[
+const projetos=[
   {nome:"Playbook",status:"dev",desc:`<p>O <strong>Playbook</strong> é uma ferramenta que auxiliará os consultores a entenderem os processos que temos com o SAC, como por exemplo, o que é o <strong>chargeback</strong>?, como funciona o <strong>trancamento</strong>?, por onde realizar a alteração de data de cobrança do aluno?</p>
   <p>Nele, além de termos todos os processos detalhados e com <strong>vídeos</strong> de como é realizado, também temos as <strong>unidades</strong>, com seu endereço, foto de sua fachada e também dados dessas unidades, como valor do plano, qual plano do <strong>Gympass/Wellhub</strong> é aceito, horário de funcionamento, se é uma unidade premium ou não.</p>
   <p>Também será disponibilizado nele o andamento dos projetos que iremos realizar, com seu nome e prazo de entrega, com status de <strong>em desenvolvimento</strong> e <strong>entregue</strong>.</p>`}
@@ -851,7 +749,7 @@ function renderProjects(){
         <span class="proj-status ${st.cls}">${st.txt}</span>
       </div>
       <div class="project-divider"></div>
-      <div class="project-desc">${p.desc}<div class="admin-row"><button class="admin-btn" onclick="event.stopPropagation();openProjetoForm('${p._id}')">✏️ Editar</button><button class="admin-btn del" onclick="event.stopPropagation();removeItem('projetos','${p._id}','${escAttr(p.nome)}')">🗑️ Excluir</button></div></div>
+      <div class="project-desc">${p.desc}</div>
     </div>`;
   }).join('');
   document.getElementById('badge-projetos').textContent=projetos.length;
@@ -860,7 +758,7 @@ function toggleProject(card){card.classList.toggle('open')}
 renderProjects();
 
 // ══════════ COLABORADORES SULTS ══════════
-const SEED_colaboradores=[
+const colaboradores=[
   {nome:"Carlos",horario:"08:00 às 16:00"},
   {nome:"David",horario:"08:00 às 16:00"},
   {nome:"Paulo",horario:"10:00 às 18:00"},
@@ -879,237 +777,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSults()});
 // ══ UTILS ══
 function copyEmail(){navigator.clipboard.writeText('sac@academiagavioes.com.br').then(()=>showToast('E-mail copiado!'))}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
-
-/* ════════════════ FIREBASE — EDIÇÃO EM TEMPO REAL ════════════════ */
-/* ⬇️⬇️⬇️  COLE AQUI as configurações do SEU projeto Firebase  ⬇️⬇️⬇️ */
-const firebaseConfig = {
-  apiKey: "AIzaSyCMJSlv5sf_NUVHffbjqgCqcR2uwk1kMtM",
-  authDomain: "playbook-academia-gavi.firebaseapp.com",
-  projectId: "playbook-academia-gavi",
-  storageBucket: "playbook-academia-gavi.firebasestorage.app",
-  messagingSenderId: "1000660096628",
-  appId: "1:1000660096628:web:b4c5c1ae27776103f12321"
-};
-/* ⬆️⬆️⬆️  (não precisa mexer em mais nada abaixo desta linha)  ⬆️⬆️⬆️ */
-
-const FB_CONFIGURED = !!firebaseConfig.apiKey && firebaseConfig.apiKey.indexOf('SUA_')!==0;
-let db=null, fbauth=null;
-if(FB_CONFIGURED){
-  try{ firebase.initializeApp(firebaseConfig); db=firebase.firestore(); fbauth=firebase.auth(); }
-  catch(e){ console.error('Erro ao iniciar Firebase:',e); }
-}
-
-function esc(s){return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function escAttr(s){return (s==null?'':String(s)).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,"\\'");}
-function val(id){const el=document.getElementById(id);return el?el.value:'';}
-
-/* ---- LOGIN ---- */
-function openLogin(){ if(!fbauth){alert('O Firebase ainda não foi configurado neste arquivo.\nAbra o arquivo COMO-CONFIGURAR.txt para ver o passo a passo.');return;} document.getElementById('login-error').textContent=''; document.getElementById('login-modal').classList.add('show'); setTimeout(()=>document.getElementById('login-email').focus(),100); }
-function closeLogin(){document.getElementById('login-modal').classList.remove('show');}
-function doLogin(){
-  const email=val('login-email').trim(), pass=val('login-pass');
-  if(!email||!pass){document.getElementById('login-error').textContent='Preencha e-mail e senha.';return;}
-  fbauth.signInWithEmailAndPassword(email,pass)
-    .then(()=>{closeLogin();document.getElementById('login-pass').value='';showToast('Modo edição ativado ✏️');})
-    .catch(err=>{document.getElementById('login-error').textContent=traduzErro(err.code);});
-}
-function doLogout(){ if(fbauth) fbauth.signOut().then(()=>showToast('Você saiu do modo edição.')); }
-function traduzErro(code){
-  const m={'auth/invalid-email':'E-mail inválido.','auth/user-not-found':'Usuário não encontrado.','auth/wrong-password':'Senha incorreta.','auth/invalid-credential':'E-mail ou senha incorretos.','auth/too-many-requests':'Muitas tentativas. Aguarde alguns minutos.','auth/network-request-failed':'Sem conexão com a internet.'};
-  return m[code]||('Erro: '+(code||'desconhecido'));
-}
-
-/* ---- CONTADORES E BANNER ---- */
-function updateProcCounts(){
-  const el=id=>document.getElementById(id);
-  el('count-total').textContent=processos.length;
-  el('count-chamado').textContent=processos.filter(p=>p.chamado).length;
-  el('count-anexo').textContent=processos.filter(p=>p.anexo).length;
-  el('badge-processos').textContent=processos.length;
-}
-function checkSeed(){
-  const b=document.getElementById('seed-banner'); if(!b)return;
-  const empty = processos.length===0 && unidades.length===0 && projetos.length===0;
-  b.style.display = (isEditor && empty && db) ? 'flex' : 'none';
-}
-
-/* ════════ CONTROLE DE ACESSO ════════
-   Admins (lista abaixo) = veem E editam.  Demais logados = só visualizam.
-   Para adicionar/remover um admin: edite ESTA lista E também as Regras do
-   Firestore (precisa bater nos dois lugares). */
-const ADMIN_EMAILS = [
-  "davidchagas25@gmail.com",
-  "carlosdanntass@gmail.com"
-];
-
-let _listeners=[], _listening=false;
-function clearData(){ processos=[];unidades=[];dadosUnidades={};unitThumbs={};projetos=[];colaboradores=[]; renderCards();renderUnits('');renderProjects();renderSults();updateProcCounts(); }
-function attachListeners(){
-  if(_listening)return; _listening=true;
-  _listeners.push(db.collection('processos').onSnapshot(s=>{
-    processos=s.docs.map(d=>({_id:d.id,...d.data()})).sort((a,b)=>(a.ordem||0)-(b.ordem||0));
-    renderCards(); updateProcCounts(); checkSeed();
-  }, e=>console.error('processos:',e)));
-  _listeners.push(db.collection('unidades').onSnapshot(s=>{
-    unidades=s.docs.map(d=>({_id:d.id,...d.data()})).sort((a,b)=>(a.ordem||0)-(b.ordem||0));
-    dadosUnidades={}; unitThumbs={};
-    unidades.forEach(u=>{ dadosUnidades[u.nome]={hours:u.hours,phone:u.phone,parking:u.parking,services:u.services||[],pcd:u.pcd,plans:u.plans,model:u.model}; if(u.thumb)unitThumbs[u.nome]=u.thumb; });
-    document.getElementById('badge-unidades').textContent=unidades.length;
-    renderUnits((document.getElementById('search').value||'').toLowerCase());
-    addUnitMarkers(); checkSeed();
-  }, e=>console.error('unidades:',e)));
-  _listeners.push(db.collection('projetos').onSnapshot(s=>{
-    projetos=s.docs.map(d=>({_id:d.id,...d.data()})).sort((a,b)=>(a.ordem||0)-(b.ordem||0));
-    renderProjects(); checkSeed();
-  }, e=>console.error('projetos:',e)));
-  _listeners.push(db.collection('colaboradores').onSnapshot(s=>{
-    colaboradores=s.docs.map(d=>({_id:d.id,...d.data()})).sort((a,b)=>(a.ordem||0)-(b.ordem||0));
-    renderSults();
-  }, e=>console.error('colaboradores:',e)));
-}
-function detachListeners(){ _listeners.forEach(u=>{try{u()}catch(e){}}); _listeners=[]; _listening=false; }
-
-if(db && fbauth){
-  fbauth.onAuthStateChanged(user=>{
-    const info=document.getElementById('auth-info'), lout=document.getElementById('btn-logout');
-    if(user){
-      isEditor = ADMIN_EMAILS.includes((user.email||'').toLowerCase());
-      document.body.classList.add('authed');
-      document.body.classList.toggle('editor', isEditor);
-      info.textContent = (isEditor?'✏️ Admin: ':'👁️ ')+(user.email||'');
-      lout.style.display='inline-flex';
-      const lp=document.getElementById('login-pass'); if(lp)lp.value='';
-      attachListeners(); checkSeed();
-    } else {
-      isEditor=false;
-      document.body.classList.remove('authed','editor');
-      info.textContent=''; lout.style.display='none';
-      detachListeners(); clearData();
-    }
-  });
-} else {
-  /* MODO DEMONSTRAÇÃO (Firebase não configurado): mostra os dados embutidos */
-  document.body.classList.add('authed');
-  processos=SEED_processos.map((p,i)=>({...p,_id:'s'+i,ordem:i}));
-  unidades=SEED_unidades.map((u,i)=>({...u,...(SEED_dadosUnidades[u.nome]||{}),thumb:SEED_unitThumbs[u.nome]||'',_id:'u'+i,ordem:i}));
-  dadosUnidades={...SEED_dadosUnidades}; unitThumbs={...SEED_unitThumbs};
-  projetos=SEED_projetos.map((p,i)=>({...p,_id:'p'+i,ordem:i}));
-  colaboradores=SEED_colaboradores.map((c,i)=>({...c,_id:'c'+i}));
-  updateProcCounts(); renderCards(); renderUnits(''); renderProjects(); renderSults();
-  document.getElementById('badge-unidades').textContent=unidades.length;
-}
-
-/* ---- IMPORTAR DADOS INICIAIS PARA A NUVEM ---- */
-async function seedAll(){
-  if(!db||!isEditor){showToast('Faça login para importar.');return;}
-  if(!confirm('Importar todos os dados iniciais (processos, unidades, projetos e colaboradores) para a nuvem?'))return;
-  showToast('Importando... aguarde ⏳');
-  try{
-    let batch=db.batch(), n=0;
-    const commitIf=async()=>{ if(n>=400){await batch.commit();batch=db.batch();n=0;} };
-    const put=async(col,obj)=>{ batch.set(db.collection(col).doc(),obj); n++; await commitIf(); };
-    for(let i=0;i<SEED_processos.length;i++){const p=SEED_processos[i];await put('processos',{titulo:p.titulo,dept:p.dept,chamado:!!p.chamado,anexo:!!p.anexo,obs:p.obs||'',descricao:p.descricao,passos:p.passos||[],ordem:i});}
-    for(let i=0;i<SEED_unidades.length;i++){const u=SEED_unidades[i];const d=SEED_dadosUnidades[u.nome]||{};await put('unidades',{nome:u.nome,end:u.end,lat:u.lat,lon:u.lon,hours:d.hours||'',phone:d.phone||'',parking:d.parking||'',services:d.services||[],pcd:!!d.pcd,plans:d.plans||'',model:d.model||'',thumb:SEED_unitThumbs[u.nome]||'',ordem:i});}
-    for(let i=0;i<SEED_projetos.length;i++){const p=SEED_projetos[i];await put('projetos',{nome:p.nome,status:p.status,desc:p.desc,ordem:i});}
-    for(let i=0;i<SEED_colaboradores.length;i++){const c=SEED_colaboradores[i];await put('colaboradores',{nome:c.nome,horario:c.horario,ordem:i});}
-    await batch.commit();
-    showToast('Dados importados com sucesso! ✅');
-  }catch(e){console.error(e);alert('Erro ao importar: '+e.message);}
-}
-
-/* ---- SALVAR / EXCLUIR ---- */
-function saveDoc(col,id,data){
-  if(!db){alert('Firebase não configurado.');return;}
-  const op = id ? db.collection(col).doc(id).set(data) : db.collection(col).add(data);
-  op.then(()=>{closeEdit();showToast('Salvo! ✅');}).catch(e=>alert('Erro ao salvar: '+e.message));
-}
-function removeItem(col,id,label){
-  if(!db||!isEditor)return;
-  if(!confirm('Excluir "'+label+'"?\nEsta ação não pode ser desfeita.'))return;
-  db.collection(col).doc(id).delete().then(()=>showToast('Excluído.')).catch(e=>alert('Erro: '+e.message));
-}
-
-/* ---- MODAL DE EDIÇÃO (genérico) ---- */
-let _editSave=null;
-function openEdit(title,bodyHTML,onSave){
-  document.getElementById('edit-title').textContent=title;
-  document.getElementById('edit-body').innerHTML=bodyHTML;
-  document.getElementById('edit-modal').classList.add('show');
-  _editSave=onSave;
-}
-function closeEdit(){document.getElementById('edit-modal').classList.remove('show');_editSave=null;}
-function submitEdit(){if(_editSave)_editSave();}
-function addForActiveTab(){ if(activeTab==='processos')openProcessoForm(); else if(activeTab==='unidades')openUnidadeForm(); else if(activeTab==='projetos')openProjetoForm(); }
-
-/* ---- FORMULÁRIO: PROCESSO ---- */
-function openProcessoForm(id){
-  const p=id?processos.find(x=>x._id===id):{dept:'SAC',chamado:false,anexo:false,obs:'',descricao:'',passos:['']};
-  if(!p){showToast('Item não encontrado');return;}
-  const opts=['SAC','E-mail','WhatsApp'].map(o=>`<option ${p.dept===o?'selected':''}>${o}</option>`).join('');
-  const passos=(p.passos&&p.passos.length?p.passos:['']);
-  openEdit(id?'Editar processo':'Novo processo',`
-    <label class="fld">Título<input id="f-titulo" value="${esc(p.titulo||'')}"></label>
-    <label class="fld">Departamento<select id="f-dept">${opts}</select></label>
-    <div class="fld-row">
-      <label class="chk"><input type="checkbox" id="f-chamado" ${p.chamado?'checked':''}> Requer chamado</label>
-      <label class="chk"><input type="checkbox" id="f-anexo" ${p.anexo?'checked':''}> Requer anexo</label>
-    </div>
-    <label class="fld">Observação (opcional)<textarea id="f-obs" rows="2">${esc(p.obs||'')}</textarea></label>
-    <label class="fld">Descrição<textarea id="f-desc" rows="3">${esc(p.descricao||'')}</textarea></label>
-    <div class="fld">Passo a passo
-      <div id="passos-list">${passos.map(s=>passoField(s)).join('')}</div>
-      <button type="button" class="mini-btn" onclick="addPassoField()">+ Adicionar passo</button>
-    </div>`,
-  ()=>{
-    const titulo=val('f-titulo').trim(); if(!titulo){alert('Informe o título.');return;}
-    const passosArr=[...document.querySelectorAll('#passos-list textarea')].map(t=>t.value.trim()).filter(Boolean);
-    saveDoc('processos',id,{titulo,dept:val('f-dept'),chamado:document.getElementById('f-chamado').checked,anexo:document.getElementById('f-anexo').checked,obs:val('f-obs').trim(),descricao:val('f-desc').trim(),passos:passosArr,ordem:id?(p.ordem||0):Date.now()});
-  });
-}
-function passoField(s){return `<div class="passo-item"><textarea rows="2" placeholder="Descreva o passo...">${esc(s||'')}</textarea><button type="button" class="del-mini" onclick="this.parentElement.remove()">✕</button></div>`;}
-function addPassoField(){document.getElementById('passos-list').insertAdjacentHTML('beforeend',passoField(''));}
-
-/* ---- FORMULÁRIO: UNIDADE ---- */
-function openUnidadeForm(id){
-  const u=id?unidades.find(x=>x._id===id):{services:[],pcd:false,model:'Própria'};
-  if(!u){showToast('Item não encontrado');return;}
-  const modelOpts=['Própria','Franquia'].map(o=>`<option ${u.model===o?'selected':''}>${o}</option>`).join('');
-  const svc=Object.keys(SVC_ICONS).map(s=>`<label class="chk sm"><input type="checkbox" class="f-svc" value="${esc(s)}" ${(u.services||[]).includes(s)?'checked':''}> ${SVC_ICONS[s]} ${s}</label>`).join('');
-  openEdit(id?'Editar unidade':'Nova unidade',`
-    <label class="fld">Nome<input id="u-nome" value="${esc(u.nome||'')}"></label>
-    <label class="fld">Endereço<input id="u-end" value="${esc(u.end||'')}"></label>
-    <div class="fld-row"><label class="fld">Latitude<input id="u-lat" value="${esc(u.lat==null?'':u.lat)}"></label><label class="fld">Longitude<input id="u-lon" value="${esc(u.lon==null?'':u.lon)}"></label></div>
-    <div class="fld-hint">Para achar lat/lon: no Google Maps, clique com o botão direito no local — aparecem os dois números (latitude, longitude).</div>
-    <label class="fld">Modelo<select id="u-model">${modelOpts}</select></label>
-    <label class="fld">Horário<input id="u-hours" value="${esc(u.hours||'')}"></label>
-    <label class="fld">Telefone<input id="u-phone" value="${esc(u.phone||'')}"></label>
-    <label class="fld">Estacionamento<input id="u-parking" value="${esc(u.parking||'')}"></label>
-    <label class="fld">Planos (Gympass/Totalpass)<input id="u-plans" value="${esc(u.plans||'')}"></label>
-    <label class="fld">Foto da fachada (URL da imagem)<input id="u-thumb" value="${esc(u.thumb||'')}"></label>
-    <label class="chk"><input type="checkbox" id="u-pcd" ${u.pcd?'checked':''}> Acessível para PCD</label>
-    <div class="fld">Serviços disponíveis<div class="svc-grid">${svc}</div></div>`,
-  ()=>{
-    const nome=val('u-nome').trim(); if(!nome){alert('Informe o nome.');return;}
-    const services=[...document.querySelectorAll('.f-svc:checked')].map(c=>c.value);
-    saveDoc('unidades',id,{nome,end:val('u-end').trim(),lat:parseFloat(val('u-lat'))||0,lon:parseFloat(val('u-lon'))||0,model:val('u-model'),hours:val('u-hours').trim(),phone:val('u-phone').trim(),parking:val('u-parking').trim(),plans:val('u-plans').trim(),thumb:val('u-thumb').trim(),pcd:document.getElementById('u-pcd').checked,services,ordem:id?(u.ordem||0):Date.now()});
-  });
-}
-
-/* ---- FORMULÁRIO: PROJETO ---- */
-function openProjetoForm(id){
-  const p=id?projetos.find(x=>x._id===id):{status:'dev',desc:''};
-  if(!p){showToast('Item não encontrado');return;}
-  const st=[['dev','Em desenvolvimento'],['done','Entregue']].map(([v,t])=>`<option value="${v}" ${p.status===v?'selected':''}>${t}</option>`).join('');
-  openEdit(id?'Editar projeto':'Novo projeto',`
-    <label class="fld">Nome<input id="pr-nome" value="${esc(p.nome||'')}"></label>
-    <label class="fld">Status<select id="pr-status">${st}</select></label>
-    <label class="fld">Descrição<textarea id="pr-desc" rows="7">${esc(p.desc||'')}</textarea></label>
-    <div class="fld-hint">Pode usar HTML simples, ex.: &lt;p&gt;parágrafo&lt;/p&gt; e &lt;strong&gt;negrito&lt;/strong&gt;.</div>`,
-  ()=>{
-    const nome=val('pr-nome').trim(); if(!nome){alert('Informe o nome.');return;}
-    saveDoc('projetos',id,{nome,status:val('pr-status'),desc:val('pr-desc'),ordem:id?(p.ordem||0):Date.now()});
-  });
-}
 </script>
 </body>
 </html>
